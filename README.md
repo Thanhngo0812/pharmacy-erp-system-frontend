@@ -82,7 +82,7 @@ To get the frontend running locally:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/pharmacy-erp-frontend.git](https://github.com/your-username/pharmacy-erp-frontend.git)
+    git clone [https://github.com/Thanhngo0812/pharmacy-erp-system-frontend.git](https://github.com/Thanhngo0812/pharmacy-erp-system-frontend.git)
     cd pharmacy-erp-frontend
     ```
 
