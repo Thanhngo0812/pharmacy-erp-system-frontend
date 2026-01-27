@@ -1,10 +1,19 @@
 .sidebar-container {
   width: 280px;
   border-right: 1px solid rgb(200, 198, 198);
-  .title {
-    text-align: center;
+  transition: width 0.3s ease;
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 20px;
+  }
+  .title {
     color: blue;
+    margin-left: 10px;
+  }
+  &.close {
+    width: 82px;
   }
   .menu-list {
     width: 100%;
