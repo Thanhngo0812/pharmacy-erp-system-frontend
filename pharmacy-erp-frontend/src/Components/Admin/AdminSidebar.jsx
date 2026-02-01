@@ -2,13 +2,53 @@ import "../scss/AdminSidebar.scss";
 import { FaBoxOpen, FaChartLine, FaUsers } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../../public/vite.svg";
+import { useContext } from "react";
+import { AuthContext } from "../../store/AuthContext";
 
 export default function AdminSidebar({ openSidebar }) {
   const menuList = [
-    { path: "", name: "Dashboard", icon: <FaChartLine /> },
-    { path: "product", name: "Products", icon: <FaBoxOpen /> },
-    { path: "user", name: "Users", icon: <FaUsers /> },
+    {
+      path: "",
+      name: "Dashboard",
+      icon: <FaChartLine />,
+      require_role: ["ROLE_ADMIN"],
+    },
+    {
+      path: "product",
+      name: "Products",
+      icon: <FaBoxOpen />,
+      require_role: ["ROLE_ADMIN"],
+    },
+    {
+      path: "user",
+      name: "Users",
+      icon: <FaUsers />,
+      require_role: ["ROLE_ADMIN"],
+    },
+    {
+      path: "account",
+      name: "Accounts",
+      icon: <FaChartLine />,
+      require_role: ["ROLE_ADMIN"],
+    },
+    {
+      path: "profile",
+      name: "Profile",
+      icon: <FaBoxOpen />,
+      require_role: ["ROLE_ADMIN"],
+    },
+    {
+      path: "salary",
+      name: "Salary",
+      icon: <FaUsers />,
+      require_role: ["ROLE_USER"],
+    },
   ];
+  const { user, loading } = useContext(AuthContext);
+  if (loading) return null;
+  const menuListAfterCheckRole = menuList.filter((tab) =>
+    user.roles.some((item) => tab.require_role.includes(item)),
+  );
   return (
     <div className={`sidebar-container ${openSidebar ? "" : "close"}`}>
       <Link to="/admin" className="sidebar-header">
@@ -19,7 +59,7 @@ export default function AdminSidebar({ openSidebar }) {
       </Link>
 
       <div className="menu-list">
-        {menuList.map((item) => (
+        {menuListAfterCheckRole.map((item) => (
           <NavLink
             to={item.path}
             end

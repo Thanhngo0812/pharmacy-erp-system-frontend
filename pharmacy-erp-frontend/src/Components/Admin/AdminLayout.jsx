@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AdminHeader from "./AdminHeader";
 import AdminSidebar from "./AdminSidebar";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import "../scss/AdminLayout.scss";
+import { AuthContext } from "../../store/AuthContext";
 
 const AdminLayout = () => {
   const [openSidebar, setOpenSidabar] = useState(true);
   const toggleSidebar = () => {
     setOpenSidabar(!openSidebar);
   };
+  const { checkValidToken } = useContext(AuthContext);
+  if (!checkValidToken()) {
+    return <Navigate to="/login" replace/>;
+  }
   return (
     <>
       <div className="admin-container">
