@@ -1,12 +1,14 @@
 .sidebar-container {
   width: 280px;
-  border-right: 1px solid rgb(200, 198, 198);
+  border-right: 1px solid white;
   transition: width 0.3s ease;
+  background-color: #65A7E3;
   .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px;
+    border-bottom: 1px solid white;
   }
   .title {
     color: blue;
@@ -18,7 +20,7 @@
   .menu-list {
     width: 100%;
     .menu-items {
-      color: black;
+      color: white;
       display: flex;
       align-items: center;
       margin: 10px;
@@ -30,12 +32,20 @@
         padding-right: 17px;
       }
       &:hover {
-        background-color: #f2f4f7;
+        background-color: #4093DE;
+        
       }
       &.active {
         background-color: #ecf3ff;
-        color: #465fff;
+        color: #65A7E3;
       }
     }
+  }
+  .logo-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-bottom: 5px;
   }
 }

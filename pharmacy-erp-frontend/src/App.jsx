@@ -52,7 +52,7 @@ function App() {
             <Route
               path="profile"
               element={
-                <ProtectedRoute roles={["ROLE_ADMIN"]}>
+                <ProtectedRoute roles={["ROLE_WM"]}>
                   <Profile />
                 </ProtectedRoute>
               }
@@ -60,7 +60,7 @@ function App() {
             <Route
               path="salary"
               element={
-                <ProtectedRoute roles={["ROLE_USER"]}>
+                <ProtectedRoute roles={["ROLE_SS"]}>
                   <Salary />
                 </ProtectedRoute>
               }

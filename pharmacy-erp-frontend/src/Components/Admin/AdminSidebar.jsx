@@ -1,7 +1,7 @@
 import "../scss/AdminSidebar.scss";
 import { FaBoxOpen, FaChartLine, FaUsers } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
-import logo from "../../../public/vite.svg";
+import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../store/AuthContext";
 
@@ -52,10 +52,18 @@ export default function AdminSidebar({ openSidebar }) {
   return (
     <div className={`sidebar-container ${openSidebar ? "" : "close"}`}>
       <Link to="/admin" className="sidebar-header">
-        <img src={logo} alt="Logo Admin" className="logo" />
-        <h2 className="title" style={{ display: openSidebar ? "" : "none" }}>
+        <img src={logo} alt="Logo Admin" className="logo-image" />
+       <div>
+         <h3 className="title" style={{ display: openSidebar ? "" : "none", color: 'white' }}>
           Pharmacy
-        </h2>
+        </h3>
+        <h3 className="title" style={{ display: openSidebar ? "" : "none",color:'#D9251B' }}>
+          ERP
+        </h3>
+        <h3 className="title" style={{ display: openSidebar ? "" : "none",color:'#00583B' }}>
+          System
+        </h3>
+       </div>
       </Link>
 
       <div className="menu-list">

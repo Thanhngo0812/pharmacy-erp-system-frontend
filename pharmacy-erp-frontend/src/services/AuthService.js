@@ -1,11 +1,11 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
+import { API_URL } from '../utils/config'; // Import từ file trên
 export const AuthService = {
   login: async (userdata) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        `${API_URL}api/auth/login`,
         userdata,
       );
       if (response) {
