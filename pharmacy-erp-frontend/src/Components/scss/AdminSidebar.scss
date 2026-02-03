@@ -2,7 +2,16 @@
   width: 280px;
   border-right: 1px solid white;
   transition: width 0.3s ease;
-  background-color: #65A7E3;
+  background-color: #65a7e3;
+  position: relative;
+  .icon-close-sidebar {
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
   .sidebar-header {
     display: flex;
     align-items: center;
@@ -32,12 +41,11 @@
         padding-right: 17px;
       }
       &:hover {
-        background-color: #4093DE;
-        
+        background-color: #4093de;
       }
       &.active {
         background-color: #ecf3ff;
-        color: #65A7E3;
+        color: #65a7e3;
       }
     }
   }
@@ -47,5 +55,39 @@
     border-radius: 5px;
     object-fit: cover;
     margin-bottom: 5px;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 150;
+  display: none;
+}
+
+// Tablet
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .sidebar-container {
+    display: unset;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 200;
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+    &.show-mobile {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      margin-top: 45px;
+    }
+  }
+  .sidebar-overlay {
+    display: block;
   }
 }

@@ -1,11 +1,15 @@
 import "../scss/AdminSidebar.scss";
-import { FaBoxOpen, FaChartLine, FaUsers } from "react-icons/fa";
+import { FaBoxOpen, FaChartLine, FaUsers, FaTimes } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../store/AuthContext";
 
-export default function AdminSidebar({ openSidebar }) {
+export default function AdminSidebar({
+  openSidebar,
+  showSidebar,
+  toggleSidebar,
+}) {
   const menuList = [
     {
       path: "",
@@ -35,13 +39,13 @@ export default function AdminSidebar({ openSidebar }) {
       path: "profile",
       name: "Profile",
       icon: <FaBoxOpen />,
-      require_role: ["ROLE_ADMIN"],
+      require_role: ["ROLE_WM"],
     },
     {
       path: "salary",
       name: "Salary",
       icon: <FaUsers />,
-      require_role: ["ROLE_USER"],
+      require_role: ["ROLE_SS"],
     },
   ];
   const { user, loading } = useContext(AuthContext);
@@ -50,42 +54,62 @@ export default function AdminSidebar({ openSidebar }) {
     user.roles.some((item) => tab.require_role.includes(item)),
   );
   return (
-    <div className={`sidebar-container ${openSidebar ? "" : "close"}`}>
-      <Link to="/admin" className="sidebar-header">
-        <img src={logo} alt="Logo Admin" className="logo-image" />
-       <div>
-         <h3 className="title" style={{ display: openSidebar ? "" : "none", color: 'white' }}>
-          Pharmacy
-        </h3>
-        <h3 className="title" style={{ display: openSidebar ? "" : "none",color:'#D9251B' }}>
-          ERP
-        </h3>
-        <h3 className="title" style={{ display: openSidebar ? "" : "none",color:'#00583B' }}>
-          System
-        </h3>
-       </div>
-      </Link>
-
-      <div className="menu-list">
-        {menuListAfterCheckRole.map((item) => (
-          <NavLink
-            to={item.path}
-            end
-            key={item.path}
-            className={({ isActive }) =>
-              isActive ? "menu-items active" : "menu-items"
-            }
-          >
-            <div className="icon">{item.icon}</div>
-            <div
-              className="name"
-              style={{ display: openSidebar ? "" : "none" }}
+    <>
+      {showSidebar && (
+        // man mau den hien thi duoi sidebar
+        <div className="sidebar-overlay" onClick={toggleSidebar}></div>
+      )}
+      <div
+        className={`sidebar-container ${openSidebar ? "" : "close"} ${showSidebar ? "show-mobile" : ""}`}
+      >
+        {showSidebar && (
+          <FaTimes className="icon-close-sidebar" onClick={toggleSidebar} />
+        )}
+        <Link to="/admin" className="sidebar-header">
+          <img src={logo} alt="Logo Admin" className="logo-image" />
+          <div>
+            <h3
+              className="title"
+              style={{ display: openSidebar ? "" : "none", color: "white" }}
             >
-              {item.name}
-            </div>
-          </NavLink>
-        ))}
+              Pharmacy
+            </h3>
+            <h3
+              className="title"
+              style={{ display: openSidebar ? "" : "none", color: "#D9251B" }}
+            >
+              ERP
+            </h3>
+            <h3
+              className="title"
+              style={{ display: openSidebar ? "" : "none", color: "#00583B" }}
+            >
+              System
+            </h3>
+          </div>
+        </Link>
+
+        <div className="menu-list">
+          {menuListAfterCheckRole.map((item) => (
+            <NavLink
+              to={item.path}
+              end
+              key={item.path}
+              className={({ isActive }) =>
+                isActive ? "menu-items active" : "menu-items"
+              }
+            >
+              <div className="icon">{item.icon}</div>
+              <div
+                className="name"
+                style={{ display: openSidebar ? "" : "none" }}
+              >
+                {item.name}
+              </div>
+            </NavLink>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

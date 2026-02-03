@@ -4,53 +4,54 @@
   display: flex;
   justify-content: space-between; /* Quan trọng: Đẩy 2 phần tử ra 2 mép trái phải */
   align-items: center;
-  background-color:#65A7E3 ;
-  .icon-fabars {
-    width: 42px;
-    height: 42px;
-    border: 1px solid white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-left: 20px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    &:hover {
-      background-color: #4093DE;
+  background-color: #65a7e3;
+  .header-left {
+    .icon-fabars {
+      width: 42px;
+      height: 42px;
+      border: 1px solid white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 20px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      &:hover {
+        background-color: #4093de;
+      }
     }
   }
-}
 
-/* Style cho Avatar */
+  /* Style cho Avatar */
   .header-right {
     position: relative; /* QUAN TRỌNG: Làm điểm neo cho menu con */
     display: flex;
-    align-items: center;    /* 2. Căn giữa trục dọc (chữ sẽ tự nhảy vào giữa so với ảnh) */
+    align-items: center; /* 2. Căn giữa trục dọc (chữ sẽ tự nhảy vào giữa so với ảnh) */
     margin-right: 5px;
     .information-user {
       position: relative; /* QUAN TRỌNG: Làm điểm neo cho menu con */
       display: flex;
       align-items: center;
       cursor: pointer;
-        &:hover .user-avatar{
-              opacity: 0.8;
-            }
-          &:hover .user-name {
-      text-decoration: underline;
-            }
-        &:hover .waving-hand {
-    animation: wave-animation 2.5s infinite;
-  }
+      &:hover .user-avatar {
+        opacity: 0.8;
+      }
+      &:hover .user-name {
+        text-decoration: underline;
+      }
+      &:hover .waving-hand {
+        animation: wave-animation 2.5s infinite;
+      }
     }
-        
+
     .user-avatar {
-      width: 50px;            /* Chiều rộng ảnh */
-      height: 50px;           /* Chiều cao ảnh (phải bằng chiều rộng) */
-      border-radius: 50%;     
-      object-fit: cover;      
+      width: 50px; /* Chiều rộng ảnh */
+      height: 50px; /* Chiều cao ảnh (phải bằng chiều rộng) */
+      border-radius: 50%;
+      object-fit: cover;
       cursor: pointer;
-      border: 2px solid #e0e0e0; 
+      border: 2px solid #e0e0e0;
       margin-right: 10px;
-    
+
       &:hover {
         opacity: 0.8;
       }
@@ -61,39 +62,35 @@
       font-size: 16px;
       color: white;
       .waving-hand {
-      display: inline-block;        /* Bắt buộc có để transform hoạt động */
-      margin-left: 6px;             /* Cách tên ra một chút */
-      transform-origin: 70% 70%;    /* Quan trọng: Xoay từ "cổ tay" chứ không xoay từ tâm */
-      
-      /* CÁCH 1: Vẫy liên tục mãi mãi */
-      // animation: wave-animation 2.5s infinite; 
+        display: inline-block; /* Bắt buộc có để transform hoạt động */
+        margin-left: 6px; /* Cách tên ra một chút */
+        transform-origin: 70% 70%; /* Quan trọng: Xoay từ "cổ tay" chứ không xoay từ tâm */
 
-      /* CÁCH 2 (Khuyên dùng): Vẫy 1 lần khi load trang rồi dừng */
-      animation: wave-animation 2.5s; 
+        /* CÁCH 1: Vẫy liên tục mãi mãi */
+        // animation: wave-animation 2.5s infinite;
 
-    }
+        /* CÁCH 2 (Khuyên dùng): Vẫy 1 lần khi load trang rồi dừng */
+        animation: wave-animation 2.5s;
+      }
     }
     .dropdown-menu {
-          position: absolute; 
-          top: 120%;
-          width: 80%;
-          margin-left:10% ;
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn header */
-          border: 1px solid white;
-          z-index: 100;       /* Đảm bảo nó nổi lên trên các thành phần khác */
-          overflow: hidden;   /* Để border-radius không bị che bởi item con */
+      position: absolute;
+      top: 120%;
+      width: 80%;
+      margin-left: 10%;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn header */
+      border: 1px solid white;
+      z-index: 100; /* Đảm bảo nó nổi lên trên các thành phần khác */
+      overflow: hidden; /* Để border-radius không bị che bởi item con */
       animation: popoverAnimation 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       transform-origin: top right;
-          }
+    }
   }
+}
 
-
-
-
-
-  /* Định nghĩa hiệu ứng chuyển động */
+/* Định nghĩa hiệu ứng chuyển động */
 @keyframes popoverAnimation {
   0% {
     opacity: 0;
@@ -105,15 +102,37 @@
   }
 }
 
-
 // 1. Định nghĩa chuyển động vẫy tay
 @keyframes wave-animation {
-  0% { transform: rotate(0.0deg); }
-  10% { transform: rotate(14.0deg); }  /* Vẫy sang phải */
-  20% { transform: rotate(-8.0deg); }  /* Vẫy sang trái */
-  30% { transform: rotate(14.0deg); }
-  40% { transform: rotate(-4.0deg); }
-  50% { transform: rotate(10.0deg); }
-  60% { transform: rotate(0.0deg); }  /* Về vị trí cũ */
-  100% { transform: rotate(0.0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  } /* Vẫy sang phải */
+  20% {
+    transform: rotate(-8deg);
+  } /* Vẫy sang trái */
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  } /* Về vị trí cũ */
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+// Tablet
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .sidebar-container {
+    display: none;
+  }
 }
