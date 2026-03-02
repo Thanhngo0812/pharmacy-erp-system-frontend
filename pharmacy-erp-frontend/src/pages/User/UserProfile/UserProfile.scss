@@ -1,0 +1,371 @@
+// UserProfile.scss
+
+// --- Variables (Đồng bộ với hệ thống) ---
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$white: #ffffff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$text-main: #343a40;
+$text-muted: #868e96;
+$shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+.profile-page-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  font-family: "Be Vietnam Pro", sans-serif;
+  // background-color: $gray-100; // Nền tổng thể (nếu cần)
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.profile-card {
+  background: $white;
+  width: 100%;
+  max-width: 800px; // Giới hạn chiều rộng cho đẹp
+  border-radius: 16px;
+  overflow: hidden; // Để bo góc ảnh bìa
+  box-shadow: $shadow-soft;
+  animation: fadeIn 0.5s ease-out;
+
+  // 1. Ảnh bìa (Cover)
+  .card-header-cover {
+    height: 160px;
+    background: #65A7E3;
+    position: relative;
+    margin-bottom: 60px; // Tạo khoảng trống cho Avatar lấn xuống
+
+    .avatar-wrapper {
+      position: absolute;
+      bottom: -50px; // Đẩy xuống một nửa
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid $white; // Viền trắng ngăn cách với nền
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background-color: $white;
+      overflow: hidden;
+
+      .profile-avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  // 2. Nội dung bên dưới
+  .card-body {
+    padding: 0 40px 40px 40px;
+
+    // Tên & Chức vụ
+    .identity-section {
+      text-align: center;
+      margin-bottom: 25px;
+
+      .user-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: $text-main;
+        margin: 0 0 5px;
+      }
+
+      .user-position {
+        font-size: 16px;
+        color: $primary-color;
+        font-weight: 600;
+        background-color: rgba(77, 171, 247, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+    }
+
+    .divider {
+      height: 1px;
+      background-color: $gray-200;
+      margin: 20px 0;
+    }
+
+    // Grid thông tin 2 cột
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr; // Mobile: 1 cột
+        gap: 20px;
+      }
+
+      .info-column {
+        .column-title {
+          font-size: 14px;
+          text-transform: uppercase;
+          color: $text-muted;
+          letter-spacing: 0.5px;
+          margin-bottom: 15px;
+          border-bottom: 2px solid $gray-100;
+          padding-bottom: 5px;
+          display: inline-block;
+        }
+
+        .info-item {
+          display: flex;
+          justify-content: space-between; // Nhãn bên trái, giá trị bên phải
+          margin-bottom: 12px;
+          font-size: 15px;
+
+          .label {
+            color: $text-muted;
+            font-weight: 500;
+          }
+
+          .value {
+            color: $text-main;
+            font-weight: 600;
+            text-align: right;
+
+            &.highlight-text {
+              color: #2f9e44; // Màu xanh lá cho Lương (tiền nong)
+            }
+          }
+        }
+      }
+    }
+
+    // Nút bấm
+    .action-buttons {
+      margin-top: 30px;
+      text-align: center;
+
+      .btn-edit {
+        background-color: $white;
+        border: 1px solid $primary-color;
+        color: $primary-color;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: $primary-color;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// UserProfile.scss
+
+// ... (Giữ nguyên phần cũ) ...
+
+// --- Style cho Card Lịch sử (MỚI) ---
+.history-card {
+  margin-top: 24px; // Cách card trên một khoảng
+  padding-bottom: 20px;
+
+  .card-header-simple {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9ecef;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #343a40;
+      font-weight: 700;
+    }
+  }
+
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      background-color: #f8f9fa;
+
+      th {
+        padding: 14px 20px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: #868e96;
+        text-transform: uppercase;
+        border-bottom: 2px solid #e9ecef;
+        white-space: nowrap;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #f1f3f5;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        td {
+          padding: 14px 20px;
+          font-size: 14px;
+          color: #343a40;
+          vertical-align: middle;
+
+          .change-type-badge {
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 13px;
+
+            // Type specific colors
+            &.resigned {
+              background: rgba(#fa5252, 0.1);
+              color: #fa5252;
+            }
+
+            &.promotion,
+            &.promotion_with_salary {
+              background: rgba(#7950f2, 0.1);
+              color: #7950f2;
+            }
+
+            &.rehired,
+            &.hired {
+              background: rgba(#0ca678, 0.1);
+              color: #0ca678;
+            }
+
+            &.salary_increase {
+              background: rgba(#228be6, 0.1);
+              color: #228be6;
+            }
+          }
+
+          .change-flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .arrow {
+              color: #adb5bd;
+              font-size: 12px;
+            }
+
+            .new-val {
+              font-weight: 600;
+              color: #343a40;
+            }
+
+            // Style riêng cho Lương
+            .old-salary {
+              text-decoration: line-through;
+              color: #adb5bd;
+              font-size: 13px;
+            }
+
+            .new-salary {
+              color: #2f9e44;
+              font-weight: 700;
+              font-family: monospace;
+            }
+          }
+
+          .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #868e96;
+            padding: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  // Badge Status trong bảng
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &.approved {
+      background-color: rgba(#40c057, 0.1);
+      color: #40c057;
+    }
+
+    &.pending {
+      background-color: rgba(#fab005, 0.1);
+      color: #f08c00;
+    }
+
+    &.rejected {
+      background-color: rgba(#fa5252, 0.1);
+      color: #fa5252;
+    }
+  }
+}
+
+// UserProfile.scss
+
+.profile-page-container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  // --- QUAN TRỌNG: Cấu hình Flexbox để xếp dọc ---
+  display: flex;
+  flex-direction: column; // <--- Dòng này quyết định xếp dọc (trên xuống dưới)
+  align-items: center; // Căn giữa màn hình
+  gap: 30px; // Khoảng cách giữa Card Profile và Card History
+}
+
+.profile-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 1000px; // Tăng độ rộng tối đa lên để bảng History hiển thị đẹp hơn
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  // ... các phần style bên trong giữ nguyên ...
+}
+
+// ... giữ nguyên phần history-card và table ...

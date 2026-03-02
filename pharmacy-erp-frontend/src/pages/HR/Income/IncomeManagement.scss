@@ -1,0 +1,100 @@
+// src/pages/HR/Income/IncomeManagement.scss
+
+// --- Variables (Đồng bộ với hệ thống) ---
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$primary-light: #ecf3ff;
+
+$secondary-color: #868e96;
+$text-main: #212529;
+$gray-50: #f8f9fa;
+$gray-200: #dee2e6;
+$font-family: "Be Vietnam Pro", sans-serif;
+
+.income-management-container {
+    padding: 24px;
+    background-color: $gray-50;
+    min-height: 100vh;
+    font-family: $font-family;
+    width: 100%;
+    box-sizing: border-box;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: $text-main;
+            margin: 0;
+        }
+    }
+
+    .tabs-container {
+        display: flex;
+        gap: 8px;
+        background: #fff;
+        padding: 6px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid $gray-200;
+        width: fit-content;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-item {
+        padding: 10px 24px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        color: $secondary-color;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+            color: $primary-color;
+            background: $primary-light;
+        }
+
+        &.active {
+            background: $primary-color;
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(101, 167, 227, 0.3);
+        }
+    }
+
+    .tab-content {
+        animation: fadeIn 0.3s ease-out;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .income-management-container {
+        padding: 16px;
+
+        .tabs-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+    }
+}

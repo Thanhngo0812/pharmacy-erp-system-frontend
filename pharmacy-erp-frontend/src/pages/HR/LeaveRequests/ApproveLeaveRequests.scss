@@ -1,0 +1,286 @@
+// src/pages/HR/LeaveRequests/ApproveLeaveRequests.scss
+
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$primary-light: #e7f5ff;
+
+$success-color: #40c057;
+$danger-color: #fa5252;
+$warning-color: #fab005;
+
+$white: #ffffff;
+$gray-50: #f8f9fa;
+$gray-100: #f1f3f5;
+$gray-200: #dee2e6;
+$gray-300: #ced4da;
+$gray-400: #adb5bd;
+$text-main: #212529;
+$text-light: #adb5bd;
+$secondary-color: #868e96;
+
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+.position-list-container {
+    padding: 24px;
+    background-color: $gray-50;
+    min-height: 100vh;
+    font-family: "Be Vietnam Pro", sans-serif;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: $text-main;
+            margin: 0;
+        }
+    }
+
+    .filter-card {
+        background: $white;
+        padding: 16px 20px;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        margin-bottom: 24px;
+        border: 1px solid $gray-200;
+
+        .filter-form {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end; // Căn chỉnh xuống đáy hàng
+
+            .filter-group {
+                flex: 1;
+                min-width: 160px; // Thu hẹp một chút để cân đối
+                max-width: 300px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    text-transform: uppercase;
+                    margin-bottom: 2px;
+                    letter-spacing: 0.5px;
+                }
+
+                .form-control,
+                .filter-select {
+                    width: 100%;
+                    padding: 9px 12px;
+                    border: 1px solid $gray-200;
+                    border-radius: $border-radius;
+                    font-size: 14px;
+                    font-family: inherit;
+                    color: $text-main;
+                    background-color: $white;
+                    outline: none;
+                    height: 40px; // Cố định chiều cao
+                    transition: all 0.2s ease;
+
+                    &:focus {
+                        border-color: $primary-color;
+                        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+                        background-color: #f8f9ff;
+                    }
+
+                    &[type="date"] {
+                        font-family: inherit;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .filter-actions {
+                display: flex;
+                align-items: center;
+                height: 40px; // Khớp chiều cao input
+
+                .btn-reset {
+                    height: 40px;
+                    padding: 0 20px;
+                    background-color: $gray-50;
+                    color: $text-main;
+                    border: 1px solid $gray-200;
+                    border-radius: $border-radius;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        background-color: $gray-100;
+                        border-color: $gray-300;
+                    }
+                }
+            }
+        }
+    }
+
+    .table-card {
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+        overflow: hidden;
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+            min-height: 200px;
+
+            .loading-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .position-table,
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 800px;
+
+                thead tr th {
+                    padding: 16px;
+                    text-align: left;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    background-color: $gray-50;
+                    border-bottom: 2px solid $gray-200;
+                    text-transform: uppercase;
+                }
+
+                tbody tr {
+                    border-bottom: 1px solid $gray-200;
+
+                    &:hover {
+                        background-color: $primary-light;
+                    }
+
+                    td {
+                        padding: 14px 16px;
+                        font-size: 14px;
+                        color: $text-main;
+                        vertical-align: middle;
+
+                        &.id-col {
+                            font-weight: bold;
+                            color: $secondary-color;
+                        }
+
+                        &.name-col {
+                            font-weight: 600;
+                        }
+
+                        &.reason-col {
+                            max-width: 200px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            color: $secondary-color;
+                            font-size: 13px;
+                            cursor: pointer;
+                            transition: color 0.2s;
+
+                            &:hover {
+                                color: $primary-color;
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .status-badge {
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            display: inline-block;
+
+                            &.approved {
+                                background-color: rgba($success-color, 0.1);
+                                color: darken($success-color, 10%);
+                            }
+
+                            &.pending {
+                                background-color: rgba($warning-color, 0.1);
+                                color: darken($warning-color, 15%);
+                            }
+
+                            &.rejected {
+                                background-color: rgba($danger-color, 0.1);
+                                color: $danger-color;
+                            }
+                        }
+
+                        .action-buttons {
+                            display: flex;
+                            gap: 6px;
+
+                            .action-btn {
+                                border: none;
+                                background: transparent;
+                                cursor: pointer;
+                                font-size: 13px;
+                                padding: 6px 10px;
+                                border-radius: 4px;
+                                font-weight: 500;
+                                transition: background-color 0.2s;
+
+                                &.approve {
+                                    color: $success-color;
+
+                                    &:hover {
+                                        background-color: rgba($success-color, 0.1);
+                                        border: 1px solid $success-color;
+                                    }
+                                }
+
+                                &.approve-salary {
+                                    color: $primary-color;
+
+                                    &:hover {
+                                        background-color: rgba($primary-color, 0.1);
+                                        border: 1px solid $primary-color;
+                                    }
+                                }
+
+                                &.reject {
+                                    color: $danger-color;
+
+                                    &:hover {
+                                        background-color: rgba($danger-color, 0.1);
+                                        border: 1px solid $danger-color;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 40px;
+                    color: $secondary-color;
+                    font-style: italic;
+                }
+            }
+        }
+    }
+}

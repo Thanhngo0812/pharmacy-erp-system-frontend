@@ -1,0 +1,112 @@
+.sidebar-container {
+  width: 280px;
+  border-right: 1px solid white;
+  transition: width 0.3s ease;
+  background-color: #65A7E3;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    border-bottom: 1px solid white;
+  }
+
+  .title {
+    color: blue;
+    margin-left: 10px;
+  }
+
+  &.close {
+    width: 82px;
+  }
+
+  .menu-list {
+    width: 100%;
+
+    .menu-item-wrapper {
+      margin: 10px 0;
+    }
+
+    .menu-items {
+      color: white;
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+      padding: 5px 20px;
+      border-radius: 10px;
+      transition: background-color 0.2s;
+
+      .icon {
+        font-size: 22px;
+        padding-right: 17px;
+      }
+
+      &:hover {
+        background-color: #4093DE;
+
+      }
+
+      &.active {
+        background-color: #ecf3ff;
+        color: #65A7E3;
+      }
+
+      .dropdown-icon {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+
+        &.expanded {
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    .sub-menu-container {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+
+      &.expanded {
+        max-height: 350px;
+        opacity: 1;
+      }
+    }
+
+    .sub-menu-list {
+      background-color: transparent;
+      margin-left: 10px;
+
+      .sub-menu-items {
+        margin: 5px 10px;
+        padding: 10px 15px; // Quay lại padding cũ
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8); // Trắng hơi trong suốt để tạo hiệu ứng mờ nhạt
+        border-radius: 8px;
+        transition: background-color 0.2s, color 0.2s;
+
+        &:hover {
+          color: white;
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        &.active {
+          background-color: rgba(255, 255, 255, 0.25);
+          color: white;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .logo-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-bottom: 5px;
+  }
+}

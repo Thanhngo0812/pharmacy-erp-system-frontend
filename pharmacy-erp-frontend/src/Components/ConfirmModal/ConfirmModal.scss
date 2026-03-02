@@ -1,0 +1,160 @@
+// src/components/ConfirmModal/ConfirmModal.scss
+
+$danger-color: #fa5252;
+$success-color: #40c057;
+$text-main: #343a40;
+$gray-200: #e9ecef;
+
+.modal-overlay.confirm-modal-overlay {
+  z-index: 9999 !important;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); // Nền đen mờ
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+
+  .modal-content {
+    background: white;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .modal-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid $gray-200;
+
+      .modal-icon {
+        font-size: 24px;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: $text-main;
+      }
+
+      // Màu sắc tiêu đề tùy loại
+      &.danger h3 {
+        color: $danger-color;
+      }
+
+      &.success h3 {
+        color: $success-color;
+      }
+    }
+
+    .modal-body {
+      padding: 24px;
+
+      p {
+        margin: 0;
+        color: #495057;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .modal-input {
+        width: 100%;
+        margin-top: 16px;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+        outline: none;
+        min-height: 80px;
+
+        &:focus {
+          border-color: #4dabf7;
+          box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
+        }
+      }
+    }
+
+    .modal-actions {
+      padding: 16px 24px;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+
+      button {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .btn-cancel {
+        background-color: white;
+        border: 1px solid #ced4da;
+        color: $text-main;
+
+        &:hover {
+          background-color: #f1f3f5;
+        }
+      }
+
+      .btn-confirm {
+        color: white;
+
+        &.danger {
+          background-color: $danger-color;
+
+          &:hover {
+            background-color: darken($danger-color, 10%);
+          }
+        }
+
+        &.success {
+          background-color: #65A7E3;
+
+          &:hover {
+            background-color: #4093DE;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

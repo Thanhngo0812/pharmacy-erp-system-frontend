@@ -3,15 +3,19 @@
   height: 100vh;
   background-color: #f9fafb;
 }
+
 .header-content-container {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0; // Fixes horizontal layout blowout
 }
+
 .content-container {
   // padding: 20px;
   flex: 1;
   overflow-y: auto;
+  position: relative;
+  /* Thẻ cha bao quanh vùng trắng */
+  min-width: 0; // Fixes horizontal layout blowout
 }
-
-

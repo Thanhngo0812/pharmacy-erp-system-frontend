@@ -1,0 +1,33 @@
+# .github/workflows/frontend-ci.yml
+name: Frontend CI Quality Gate
+
+on:
+  pull_request:
+    branches: [ "main" ] # Chạy khi có PR vào main
+    paths:
+      - 'pharmacy-erp-frontend/**' # Chỉ chạy khi có thay đổi trong frontend
+
+jobs:
+  test-and-verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pharmacy-erp-frontend # Thư mục chứa package.json
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          cache: 'npm'
+          cache-dependency-path: './pharmacy-erp-frontend/package-lock.json'
+          
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Linter Check
+        run: npm run lint
+
+      - name: Build and Verify
+        run: npm run build

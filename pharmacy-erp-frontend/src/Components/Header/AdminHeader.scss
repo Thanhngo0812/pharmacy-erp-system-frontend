@@ -76,8 +76,8 @@
     .dropdown-menu {
           position: absolute; 
           top: 120%;
-          width: 80%;
-          margin-left:10% ;
+          width: 70%;
+          margin-left:15% ;
           background-color: white;
           border-radius: 8px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn header */
@@ -86,6 +86,25 @@
           overflow: hidden;   /* Để border-radius không bị che bởi item con */
       animation: popoverAnimation 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       transform-origin: top right;
+      .menu-item {
+        padding: 10px 16px; /* Quan trọng: Đừng để padding quá bé, khó bấm */
+        color: #343a40; /* Màu chữ xám đậm */
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease; /* Hiệu ứng mượt */
+        gap: 10px; /* Khoảng cách giữa icon và chữ */
+        display: flex;
+        align-items: center;
+      }
+      .menu-item:hover {
+        background-color: #f1f3f5; /* Xám nhạt khi di chuột */
+        color: #228be6; /* (Tùy chọn) Chuyển chữ sang màu xanh của Header cho đẹp */
+      }
+      .menu-item.logout {
+      color: #e62222; /* (Tùy chọn) Chuyển chữ sang màu xanh của Header cho đẹp */
+    }
           }
   }
 

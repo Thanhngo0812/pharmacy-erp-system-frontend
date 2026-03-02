@@ -1,0 +1,305 @@
+// MySalary.scss
+
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$white: #ffffff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$text-main: #343a40;
+$text-muted: #868e96;
+
+.my-salary-container {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    font-family: "Be Vietnam Pro", sans-serif;
+
+    .salary-card {
+        background: $white;
+        width: 100%;
+        max-width: 700px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        animation: fadeInSalary 0.4s ease-out;
+
+        .card-header {
+            background: $primary-color;
+            padding: 20px 28px;
+            text-align: center;
+
+            h2 {
+                margin: 0;
+                color: $white;
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+            p {
+                margin: 6px 0 0;
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 14px;
+            }
+        }
+
+        .filter-section {
+            padding: 20px 28px;
+            background: $gray-100;
+            border-bottom: 1px solid $gray-200;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+
+            label {
+                font-weight: 600;
+                font-size: 14px;
+                color: $text-main;
+            }
+
+            select {
+                padding: 8px 12px;
+                border: 1px solid #dee2e6;
+                border-radius: 6px;
+                font-family: inherit;
+                font-size: 14px;
+                outline: none;
+                background: $white;
+                cursor: pointer;
+                min-width: 100px;
+
+                &:focus {
+                    border-color: $primary-color;
+                }
+            }
+
+            .btn-search {
+                padding: 8px 20px;
+                background: $primary-color;
+                color: $white;
+                border: none;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                transition: background 0.2s;
+
+                &:hover {
+                    background: $primary-dark;
+                }
+
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            }
+        }
+
+        .salary-content {
+            padding: 28px;
+
+            .employee-info {
+                text-align: center;
+                margin-bottom: 24px;
+
+                h3 {
+                    margin: 0 0 4px;
+                    font-size: 20px;
+                    color: $text-main;
+                    font-weight: 700;
+                }
+
+                .position {
+                    font-size: 14px;
+                    color: $primary-color;
+                    font-weight: 600;
+                    background: rgba(101, 167, 227, 0.1);
+                    padding: 3px 12px;
+                    border-radius: 20px;
+                    display: inline-block;
+                }
+            }
+
+            .salary-section {
+                margin-bottom: 20px;
+
+                .section-title {
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: $text-muted;
+                    font-weight: 700;
+                    margin-bottom: 12px;
+                    padding-bottom: 6px;
+                    border-bottom: 2px solid $gray-100;
+                    display: inline-block;
+                }
+
+                .salary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px 0;
+                    font-size: 15px;
+                    border-bottom: 1px solid $gray-100;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    .label {
+                        color: $text-muted;
+                        font-weight: 500;
+                    }
+
+                    .value {
+                        font-weight: 600;
+                        color: $text-main;
+                        font-family: 'JetBrains Mono', monospace;
+
+                        &.positive {
+                            color: #2f9e44;
+                        }
+
+                        &.negative {
+                            color: #e03131;
+                        }
+
+                        &.highlight {
+                            color: $primary-color;
+                        }
+                    }
+                }
+            }
+
+            .bonus-list {
+                margin-top: 8px;
+
+                .bonus-item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 8px 12px;
+                    background: $gray-100;
+                    border-radius: 6px;
+                    margin-bottom: 6px;
+                    font-size: 14px;
+
+                    .bonus-name {
+                        color: $text-main;
+                        font-weight: 500;
+                    }
+
+                    .bonus-amount {
+                        font-weight: 600;
+                        font-family: 'JetBrains Mono', monospace;
+
+                        &.positive {
+                            color: #2f9e44;
+                        }
+
+                        &.negative {
+                            color: #e03131;
+                        }
+                    }
+                }
+
+                .no-bonus {
+                    text-align: center;
+                    color: $text-muted;
+                    font-style: italic;
+                    padding: 10px;
+                    font-size: 14px;
+                }
+            }
+
+            .divider {
+                height: 2px;
+                background: linear-gradient(to right, transparent, $gray-200, transparent);
+                margin: 24px 0;
+            }
+
+            .total-section {
+                background: linear-gradient(135deg, rgba(101, 167, 227, 0.08), rgba(101, 167, 227, 0.15));
+                padding: 20px 24px;
+                border-radius: 12px;
+                border: 1px solid rgba(101, 167, 227, 0.2);
+
+                .total-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .total-label {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: $text-main;
+                    }
+
+                    .total-value {
+                        font-size: 24px;
+                        font-weight: 800;
+                        color: $primary-color;
+                        font-family: 'JetBrains Mono', monospace;
+                    }
+                }
+            }
+        }
+
+        .empty-state {
+            padding: 60px 28px;
+            text-align: center;
+
+            .empty-icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            h3 {
+                margin: 0 0 8px;
+                font-size: 18px;
+                color: $text-main;
+            }
+
+            p {
+                margin: 0;
+                color: $text-muted;
+                font-size: 14px;
+            }
+        }
+
+        .error-state {
+            padding: 40px 28px;
+            text-align: center;
+            color: #e03131;
+
+            .error-icon {
+                font-size: 36px;
+                margin-bottom: 12px;
+            }
+
+            p {
+                margin: 0;
+                font-size: 15px;
+            }
+        }
+
+        .loading-state {
+            padding: 60px 28px;
+            text-align: center;
+            color: $text-muted;
+        }
+    }
+}
+
+@keyframes fadeInSalary {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

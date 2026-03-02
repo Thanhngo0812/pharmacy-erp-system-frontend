@@ -1,0 +1,241 @@
+// --- 1. Variables (Biến màu sắc) ---
+$primary-color: #65A7E3; // Xanh dương tươi (nút bấm, focus)
+$primary-dark: #65A7E3; // Xanh đậm hơn (khi hover)
+$bg-gradient-start: #65A7E3; // Xanh rất đậm (bắt đầu gradient nền)
+$bg-gradient-end: #65A7E3; // Xanh tươi (kết thúc gradient nền)
+$white: #ffffff;
+$gray-100: #f8f9fa; // Màu nền phụ
+$gray-300: #dee2e6; // Màu viền input
+$text-primary: #212529; // Màu chữ chính (đen xám)
+$text-secondary: #868e96; // Màu chữ phụ (xám nhạt)
+$error-color: #fa5252; // Màu đỏ báo lỗi
+$input-focus-shadow: rgba(77, 171, 247, 0.25); // Bóng khi bấm vào input
+
+// --- 2. Cấu trúc chính ---
+.login-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // Nền Gradient xanh dương chéo góc -> Tạo độ sâu và chuyên nghiệp
+  background: linear-gradient(135deg, $bg-gradient-start 0%, $bg-gradient-end 100%);
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  padding: 20px; // Để trên mobile không bị sát lề
+  box-sizing: border-box;
+}
+
+// --- 3. Khung đăng nhập (Card) ---
+.login-container {
+  background-color: $white;
+  width: 100%;
+  max-width: 450px; // Độ rộng tối đa chuẩn cho form login
+  padding: 40px;
+  border-radius: 16px; // Bo góc mềm mại
+
+  // Đổ bóng đậm giúp khung nổi bật hẳn trên nền xanh
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+  // Animation trượt lên nhẹ nhàng
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  // --- Header: Logo & Tiêu đề ---
+  .login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+
+    // Bao quanh logo bằng hình tròn màu xanh
+    // Giúp logo MÀU TRẮNG hiển thị rõ trên nền thẻ MÀU TRẮNG
+    .logo-wrapper {
+      width: 80px;
+      height: 80px;
+      background: $primary-color;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(77, 171, 247, 0.4);
+
+      .login-logo {
+        width: 60%; // Logo chiếm 60% hình tròn
+        height: auto;
+        object-fit: contain;
+      }
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0 0 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: $text-secondary;
+      margin: 0;
+      text-align: center;
+    }
+  }
+
+  // --- Form & Inputs ---
+  .login-form {
+    width: 100%;
+
+    // Thông báo lỗi chung (nếu có)
+    .alert-error {
+      background-color: #fff5f5;
+      color: $error-color;
+      border: 1px solid #ffc9c9;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 8px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 15px;
+        color: $text-primary;
+        background-color: $white;
+        border: 1px solid $gray-300;
+        border-radius: 8px;
+        outline: none;
+        transition: all 0.2s ease-in-out;
+        box-sizing: border-box;
+
+        // Placeholder màu nhạt
+        &::placeholder {
+          color: #adb5bd;
+        }
+
+        // Khi bấm vào input
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 4px $input-focus-shadow; // Hiệu ứng glow xanh
+        }
+
+        // Khi bị disabled (lúc đang loading)
+        &:disabled {
+          background-color: $gray-100;
+          cursor: not-allowed;
+          opacity: 0.7;
+        }
+
+        // Khi có lỗi validate
+        &.input-error {
+          border-color: $error-color;
+          background-color: #fff5f5;
+
+          &:focus {
+            box-shadow: 0 0 0 4px rgba(250, 82, 82, 0.15);
+          }
+        }
+      }
+
+      .error-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: $error-color;
+        font-weight: 500;
+      }
+    }
+
+    // Nút đăng nhập
+    .btn-login {
+      width: 100%;
+      height: 48px; // Chiều cao cố định
+      background-color: $primary-color;
+      color: $white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(77, 171, 247, 0.3);
+      margin-top: 10px;
+
+      &:hover {
+        background-color: $primary-dark;
+        transform: translateY(-1px); // Nhấc nhẹ nút lên khi hover
+        box-shadow: 0 6px 8px rgba(77, 171, 247, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0); // Ấn xuống khi click
+      }
+
+      &:disabled {
+        background-color: #a5d8ff;
+        cursor: wait; // Con trỏ chuột hình đồng hồ cát
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  // --- Footer (Copyright) ---
+  .login-footer {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid $gray-100; // Đường kẻ mờ ngăn cách
+    padding-top: 20px;
+
+    p {
+      font-size: 12px;
+      color: #adb5bd;
+      margin: 0;
+    }
+  }
+}
+
+// --- 4. Animation Keyframes ---
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// --- 5. Responsive (Mobile) ---
+@media (max-width: 576px) {
+  .login-container {
+    padding: 25px; // Giảm padding trên màn hình nhỏ
+
+    .login-header {
+      .title {
+        font-size: 20px;
+      }
+    }
+  }
+}

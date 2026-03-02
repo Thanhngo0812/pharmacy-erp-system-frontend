@@ -1,16 +1,24 @@
 import { useContext, useState } from "react";
-import AdminHeader from "./AdminHeader";
-import AdminSidebar from "./AdminSidebar";
+import AdminHeader from "../../components/Header/AdminHeader";
+import AdminSidebar from "../../components/sidebar/AdminSidebar";
 import { Navigate, Outlet } from "react-router-dom";
-import "../scss/AdminLayout.scss";
-import { AuthContext } from "../../store/AuthContext";
+import "./AdminLayout.scss";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
+import { AuthContext } from "../../store/AuthContext";
 const AdminLayout = () => {
   const [openSidebar, setOpenSidabar] = useState(true);
   const toggleSidebar = () => {
     setOpenSidabar(!openSidebar);
   };
-  const { checkValidToken } = useContext(AuthContext);
+  const { checkValidToken, loading } = useContext(AuthContext);
+  if (loading) {
+    return (
+      <div className="loading-screen-center">
+        <LoadingSpinner fullScreen={true} text="Đang tải dữ liệu hệ thống..." />
+      </div>
+    );
+  }
   if (!checkValidToken()) {
     return <Navigate to="/login" replace/>;
   }

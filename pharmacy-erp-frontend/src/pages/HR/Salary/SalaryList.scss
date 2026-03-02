@@ -1,0 +1,960 @@
+// src/pages/HR/Salary/SalaryList.scss
+
+// --- 1. Variables (Đồng bộ với EmployeeList.scss) ---
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$primary-light: #e7f5ff;
+
+$secondary-color: #868e96;
+$success-color: #40c057;
+$danger-color: #fa5252;
+$warning-color: #fab005;
+
+$white: #ffffff;
+$gray-50: #f8f9fa;
+$gray-100: #f1f3f5;
+$gray-200: #dee2e6;
+$gray-300: #ced4da;
+$gray-400: #adb5bd;
+$text-main: #212529;
+$text-light: #adb5bd;
+
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+$font-family: "Be Vietnam Pro", sans-serif;
+
+// --- 2. Layout Chính ---
+.salary-list-container {
+    padding: 24px;
+    background-color: $gray-50;
+    min-height: 100vh;
+    font-family: $font-family;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100vw;
+    overflow-x: hidden;
+
+    &.embedded {
+        padding: 0;
+        min-height: auto;
+        background-color: transparent;
+    }
+
+    // --- Page Header ---
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: $text-main;
+            margin: 0;
+        }
+    }
+
+    // --- 3. Summary Cards ---
+    .summary-cards {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 24px;
+
+        .summary-card {
+            flex: 1;
+            background: $white;
+            border-radius: $border-radius;
+            box-shadow: $box-shadow;
+            border: 1px solid $gray-200;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            }
+
+            .summary-label {
+                font-size: 13px;
+                font-weight: 600;
+                color: $secondary-color;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .summary-value {
+                font-size: 26px;
+                font-weight: 700;
+                color: $text-main;
+            }
+
+            &.fund {
+                border-left: 4px solid $primary-color;
+
+                .summary-value {
+                    color: $primary-color;
+                    font-family: "Consolas", monospace;
+                }
+            }
+
+            &.count {
+                border-left: 4px solid $success-color;
+
+                .summary-value {
+                    color: $success-color;
+                }
+            }
+        }
+    }
+
+    // --- 4. Filter Bar ---
+    .filter-card {
+        background: $white;
+        padding: 20px;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        margin-bottom: 24px;
+        border: 1px solid $gray-200;
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end; // Căn chỉnh xuống đáy hàng
+
+            .filter-group {
+                flex: 1;
+                min-width: 140px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    text-transform: uppercase;
+                    margin-bottom: 2px;
+                    letter-spacing: 0.5px;
+                    white-space: nowrap;
+                }
+
+                input,
+                select {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid $gray-200;
+                    border-radius: $border-radius;
+                    font-size: 14px;
+                    font-family: inherit;
+                    color: $text-main;
+                    outline: none;
+                    background-color: $white;
+                    height: 38px;
+                    transition: all 0.2s ease;
+
+                    &::placeholder {
+                        color: $text-light;
+                    }
+
+                    &:focus {
+                        border-color: $primary-color;
+                        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+                        background-color: #f8f9ff;
+                    }
+                }
+
+                &.salary-range-group {
+                    flex: 2;
+                    min-width: 250px;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    align-items: flex-end;
+
+                    .range-input-wrapper {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+                    }
+
+                    .range-separator {
+                        font-weight: 600;
+                        color: $secondary-color;
+                        padding-bottom: 10px;
+                        flex-shrink: 0;
+                    }
+                }
+
+                &.sort-group {
+                    flex: 1.5;
+                    min-width: 200px;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    align-items: flex-end;
+
+                    .sort-input-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+
+                        &:first-child {
+                            flex: 1.5;
+                        }
+
+                        &:last-child {
+                            flex: 1;
+                        }
+                    }
+                }
+            }
+
+            .filter-actions {
+                height: 38px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .btn-reset {
+                    height: 38px;
+                    padding: 0 16px;
+                    border-radius: $border-radius;
+                    font-weight: 600;
+                    font-size: 13px;
+                    cursor: pointer;
+                    border: 1px solid $gray-200;
+                    background-color: $gray-50;
+                    color: $text-main;
+                    transition: all 0.2s;
+                    white-space: nowrap;
+
+                    &:hover {
+                        background-color: $gray-100;
+                        border-color: $gray-300;
+                    }
+                }
+            }
+        }
+    }
+
+    // --- 5. Error ---
+    .error-message {
+        background-color: #fff5f5;
+        color: $danger-color;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ffc9c9;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    // --- 6. Table ---
+    .table-card {
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+        overflow: hidden;
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+
+            thead {
+                background-color: $gray-50;
+                border-bottom: 2px solid $gray-200;
+
+                tr th {
+                    padding: 12px 16px;
+                    text-align: left;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+            }
+
+            tbody {
+                tr {
+                    border-bottom: 1px solid $gray-200;
+                    transition: background-color 0.1s;
+
+                    &:hover {
+                        background-color: $primary-light;
+                    }
+
+                    &.clickable-row {
+                        cursor: pointer;
+                    }
+
+                    td {
+                        padding: 12px 16px;
+                        vertical-align: middle;
+                        font-size: 14px;
+                        color: $text-main;
+
+                        &.name-cell {
+                            font-weight: 600;
+                            color: $primary-color;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        &.salary-text {
+                            font-family: "Consolas", monospace;
+                            font-weight: 600;
+                            color: $text-main;
+                        }
+
+                        .status-badge {
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            display: inline-block;
+                            min-width: 80px;
+                            text-align: center;
+
+                            &.active {
+                                background-color: rgba($success-color, 0.1);
+                                color: $success-color;
+                            }
+
+                            &.resigned,
+                            &.inactive {
+                                background-color: rgba($danger-color, 0.1);
+                                color: $danger-color;
+                            }
+
+                            &.rejected {
+                                background-color: rgba($danger-color, 0.1);
+                                color: $danger-color;
+                                text-decoration: line-through;
+                            }
+
+                            &.waiting {
+                                background-color: rgba($warning-color, 0.1);
+                                color: darken($warning-color, 15%);
+                            }
+                        }
+                    }
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 40px;
+                    color: $secondary-color;
+                    font-style: italic;
+                }
+            }
+        }
+
+        // --- 7. Pagination ---
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 16px 20px;
+            gap: 12px;
+            border-top: 1px solid $gray-200;
+            background-color: $white;
+
+            button {
+                width: 36px;
+                height: 36px;
+                border: 1px solid $gray-200;
+                background: $white;
+                border-radius: 6px;
+                cursor: pointer;
+                color: $text-main;
+                transition: all 0.2s;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
+
+                &:hover:not(:disabled) {
+                    background-color: $gray-50;
+                    border-color: $secondary-color;
+                    color: $primary-color;
+                }
+
+                &:disabled {
+                    color: $text-light;
+                    cursor: not-allowed;
+                    background-color: $gray-50;
+                    opacity: 0.6;
+                }
+            }
+
+            .page-display {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 120px;
+
+                .page-text {
+                    font-size: 14px;
+                    color: $secondary-color;
+                    cursor: pointer;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    transition: background 0.2s;
+                    user-select: none;
+
+                    b {
+                        color: $primary-color;
+                        font-weight: 700;
+                    }
+
+                    &:hover {
+                        background-color: $gray-50;
+                        color: $text-main;
+                        text-decoration: underline;
+                    }
+                }
+
+                .page-input {
+                    width: 60px;
+                    padding: 6px;
+                    text-align: center;
+                    border: 2px solid $primary-color;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: $primary-color;
+                    outline: none;
+                    background-color: $white;
+
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+
+                    -moz-appearance: textfield;
+                    appearance: textfield;
+                }
+            }
+        }
+    }
+}
+
+// --- 8. Responsive ---
+// Mặc định ẩn mobile list trên desktop
+.mobile-salary-list {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .salary-list-container {
+        padding: 16px;
+
+        .summary-cards {
+            flex-direction: column;
+            gap: 12px;
+
+            .summary-card {
+                .summary-value {
+                    font-size: 22px;
+                }
+            }
+        }
+
+        .filter-card .filter-form .filter-group {
+            min-width: 100%;
+
+            &.salary-range-group {
+                min-width: 100%;
+            }
+        }
+
+        // Ẩn Table trên mobile
+        .table-responsive {
+            display: none;
+        }
+
+        // Hiện Mobile Card
+        .mobile-salary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            .salary-card {
+                background-color: $white;
+                border-radius: $border-radius;
+                border: 1px solid $gray-200;
+                padding: 16px;
+                cursor: pointer;
+                transition: box-shadow 0.2s;
+
+                &:hover {
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                }
+
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+
+                .card-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                    padding-bottom: 12px;
+                    border-bottom: 1px dashed $gray-200;
+
+                    .emp-info {
+                        display: flex;
+                        flex-direction: column;
+
+                        .fullname {
+                            font-weight: 700;
+                            color: $text-main;
+                            font-size: 15px;
+                        }
+
+                        .emp-id {
+                            font-size: 12px;
+                            color: $secondary-color;
+                        }
+                    }
+
+                    .status-badge {
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        font-weight: 600;
+
+                        &.active {
+                            background-color: rgba($success-color, 0.1);
+                            color: $success-color;
+                        }
+
+                        &.resigned,
+                        &.inactive {
+                            background-color: rgba($danger-color, 0.1);
+                            color: $danger-color;
+                        }
+
+                        &.rejected {
+                            background-color: rgba($danger-color, 0.1);
+                            color: $danger-color;
+                            text-decoration: line-through;
+                        }
+
+                        &.waiting {
+                            background-color: rgba($warning-color, 0.1);
+                            color: darken($warning-color, 15%);
+                        }
+                    }
+                }
+
+                .card-body {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+
+                    .info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 14px;
+
+                        .label {
+                            color: $secondary-color;
+                        }
+
+                        .value {
+                            color: $text-main;
+                            font-weight: 500;
+                            text-align: right;
+                        }
+
+                        .salary-text {
+                            color: $primary-color;
+                            font-family: monospace;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+
+            .no-data {
+                text-align: center;
+                padding: 20px;
+                color: $secondary-color;
+            }
+        }
+    }
+}
+
+// <--- Đóng @media (max-width: 768px)
+
+// =============================================
+// ===  PROPOSAL SECTION (ĐỀ XUẤT BIẾN ĐỘNG) ===
+// =============================================
+.proposal-section {
+    margin-top: 32px;
+
+    .section-header {
+        margin-bottom: 16px;
+
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: $text-main;
+            margin: 0;
+        }
+    }
+
+    .proposal-filter {
+        margin-bottom: 16px;
+    }
+
+    .proposal-table-card {
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+
+        .proposal-table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .proposal-table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+
+            thead {
+                display: table-header-group;
+
+                tr {
+                    display: table-row;
+
+                    th {
+                        display: table-cell;
+                        padding: 14px 12px;
+                        text-align: left;
+                        font-size: 12px;
+                        font-weight: 700;
+                        color: $secondary-color;
+                        background-color: $gray-50;
+                        border-bottom: 2px solid $gray-200;
+                        text-transform: uppercase;
+                        white-space: normal; // Cho phép xuống dòng
+                    }
+                }
+            }
+
+            tbody {
+                display: table-row-group;
+
+                tr {
+                    display: table-row;
+                    border-bottom: 1px solid $gray-200;
+                    transition: background-color 0.1s;
+
+                    &:hover {
+                        background-color: $gray-50;
+                    }
+
+                    td {
+                        display: table-cell;
+                        padding: 12px;
+                        font-size: 14px;
+                        color: $text-main;
+                        vertical-align: middle;
+
+                        &.id-col {
+                            font-weight: 600;
+                            color: $secondary-color;
+                        }
+
+                        &.reason-col {
+                            max-width: 150px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            font-size: 13px;
+
+                            .reason-item {
+                                cursor: pointer;
+                                max-width: 200px;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                transition: all 0.2s;
+                                line-height: 1.5;
+
+                                &.proposal {
+                                    color: #666;
+                                }
+
+                                &.approved {
+                                    color: #28a745;
+                                    margin-top: 4px;
+                                }
+
+                                &.rejected {
+                                    color: #dc3545;
+                                    margin-top: 4px;
+                                }
+
+                                &:hover {
+                                    text-decoration: underline;
+                                }
+                            }
+                        }
+
+                        .change-type-badge {
+                            background: rgba($primary-color, 0.1);
+                            color: $primary-color;
+                            padding: 3px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            white-space: normal;
+                            display: inline-block;
+
+                            // Type specific colors
+                            &.resigned {
+                                background: rgba(#fa5252, 0.1);
+                                color: #fa5252;
+                            }
+
+                            &.promotion,
+                            &.promotion_with_salary {
+                                background: rgba(#7950f2, 0.1);
+                                color: #7950f2;
+                            }
+
+                            &.rehired,
+                            &.hired {
+                                background: rgba(#0ca678, 0.1);
+                                color: #0ca678;
+                            }
+
+                            &.salary_increase {
+                                background: rgba(#228be6, 0.1);
+                                color: #228be6;
+                            }
+                        }
+
+                        .change-flow-inline {
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            font-size: 13px;
+                            white-space: normal; // Cho phép text wrap
+
+                            .arrow {
+                                color: $secondary-color;
+                            }
+
+                            .old-val {
+                                color: $secondary-color;
+                                text-decoration: line-through;
+                            }
+
+                            .new-val {
+                                font-weight: 600;
+                                color: $text-main;
+                            }
+                        }
+
+                        .user-ref {
+                            background: $gray-100;
+                            padding: 3px 8px;
+                            border-radius: 4px;
+                            font-size: 13px;
+                            border: 1px solid $gray-200;
+
+                            &.pointer {
+                                cursor: pointer;
+                                transition: all 0.2s;
+
+                                &:hover {
+                                    background: rgba($primary-color, 0.08);
+                                    border-color: $primary-color;
+                                    color: darken($primary-color, 10%);
+                                }
+                            }
+                        }
+
+                        .status-badge {
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            font-weight: 600;
+
+                            &.approved {
+                                background-color: rgba($success-color, 0.1);
+                                color: $success-color;
+                            }
+
+                            &.pending {
+                                background-color: rgba($warning-color, 0.1);
+                                color: darken($warning-color, 15%);
+                            }
+
+                            &.rejected {
+                                background-color: rgba($danger-color, 0.1);
+                                color: $danger-color;
+                            }
+                        }
+
+                        .action-buttons {
+                            display: flex;
+                            gap: 4px;
+
+                            .action-btn {
+                                border: none;
+                                background: transparent;
+                                cursor: pointer;
+                                font-size: 13px;
+                                padding: 5px 10px;
+                                border-radius: 4px;
+                                font-weight: 600;
+                                transition: all 0.2s;
+
+                                &.approve {
+                                    color: $success-color;
+
+                                    &:hover {
+                                        background-color: rgba($success-color, 0.1);
+                                    }
+                                }
+
+                                &.reject {
+                                    color: $danger-color;
+
+                                    &:hover {
+                                        background-color: rgba($danger-color, 0.1);
+                                    }
+                                }
+                            }
+                        }
+
+                        .action-done {
+                            color: $secondary-color;
+                            font-size: 13px;
+                        }
+                    }
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 30px;
+                    color: $secondary-color;
+                    font-style: italic;
+                }
+            }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 16px 20px;
+            gap: 12px;
+            border-top: 1px solid $gray-200;
+            background-color: $white;
+
+            button {
+                width: 36px;
+                height: 36px;
+                border: 1px solid $gray-200;
+                background: $white;
+                border-radius: 6px;
+                cursor: pointer;
+                color: $text-main;
+                transition: all 0.2s;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
+
+                &:hover:not(:disabled) {
+                    background-color: $gray-50;
+                    border-color: $secondary-color;
+                    color: $primary-color;
+                }
+
+                &:disabled {
+                    color: $text-light;
+                    cursor: not-allowed;
+                    background-color: $gray-50;
+                    opacity: 0.6;
+                }
+            }
+
+            .page-display {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 120px;
+
+                .page-text {
+                    font-size: 14px;
+                    color: $secondary-color;
+                    cursor: pointer;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    transition: background 0.2s;
+                    user-select: none;
+
+                    b {
+                        color: $primary-color;
+                        font-weight: 700;
+                    }
+
+                    &:hover {
+                        background-color: $gray-50;
+                        color: $text-main;
+                        text-decoration: underline;
+                    }
+                }
+
+                .page-input {
+                    width: 60px;
+                    padding: 6px;
+                    text-align: center;
+                    border: 2px solid $primary-color;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: $primary-color;
+                    outline: none;
+                    background-color: $white;
+
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+
+                    -moz-appearance: textfield;
+                    appearance: textfield;
+                }
+            }
+        }
+    }
+}

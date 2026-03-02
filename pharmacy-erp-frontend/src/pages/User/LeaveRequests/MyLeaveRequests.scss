@@ -1,0 +1,329 @@
+// src/pages/User/LeaveRequests/MyLeaveRequests.scss
+
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$primary-light: #e7f5ff;
+
+$success-color: #40c057;
+$danger-color: #fa5252;
+$warning-color: #fab005;
+
+$white: #ffffff;
+$gray-50: #f8f9fa;
+$gray-100: #f1f3f5;
+$gray-200: #dee2e6;
+$text-main: #212529;
+$text-light: #adb5bd;
+$secondary-color: #868e96;
+
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+.position-list-container {
+    padding: 24px;
+    background-color: $gray-50;
+    min-height: 100vh;
+    font-family: "Be Vietnam Pro", sans-serif;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: $text-main;
+            margin: 0;
+        }
+
+        .btn-add {
+            background-color: $primary-color;
+            color: $white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba($primary-color, 0.3);
+
+            &:hover {
+                background-color: $primary-dark;
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    .table-card {
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+        overflow: hidden;
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+            min-height: 200px;
+
+            .loading-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.7);
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .position-table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 800px;
+
+                thead tr th {
+                    padding: 16px;
+                    text-align: left;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    background-color: $gray-50;
+                    border-bottom: 2px solid $gray-200;
+                    text-transform: uppercase;
+                }
+
+                tbody tr {
+                    border-bottom: 1px solid $gray-200;
+
+                    &:hover {
+                        background-color: $primary-light;
+                    }
+
+                    td {
+                        padding: 14px 16px;
+                        font-size: 14px;
+                        color: $text-main;
+                        vertical-align: middle;
+
+                        &.id-col {
+                            font-weight: bold;
+                            color: $secondary-color;
+                        }
+
+                        &.reason-col {
+                            max-width: 200px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            color: $secondary-color;
+                            font-size: 13px;
+                            cursor: pointer;
+                            transition: color 0.2s;
+
+                            &:hover {
+                                color: $primary-color;
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .status-badge {
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            display: inline-block;
+                            width: fit-content;
+                            text-align: center;
+
+                            &.approved {
+                                background-color: rgba($success-color, 0.1);
+                                color: darken($success-color, 10%);
+                            }
+
+                            &.pending {
+                                background-color: rgba($warning-color, 0.1);
+                                color: darken($warning-color, 15%);
+                            }
+
+                            &.rejected {
+                                background-color: rgba($danger-color, 0.1);
+                                color: $danger-color;
+                            }
+                        }
+
+                        .action-buttons {
+                            display: flex;
+                            gap: 6px;
+
+                            .action-btn {
+                                border: none;
+                                background: transparent;
+                                cursor: pointer;
+                                font-size: 13px;
+                                padding: 6px 10px;
+                                border-radius: 4px;
+                                font-weight: 500;
+                                transition: background-color 0.2s;
+
+                                &.delete {
+                                    color: $danger-color;
+
+                                    &:hover {
+                                        background-color: rgba($danger-color, 0.1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 40px;
+                    color: $secondary-color;
+                    font-style: italic;
+                }
+            }
+        }
+    }
+}
+
+// Khung Modal Inline cho Form Thêm/Sửa
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .modal-content.custom-form-modal {
+        width: 600px;
+        max-width: 95%;
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        display: flex;
+        flex-direction: column;
+
+        .modal-header {
+            background-color: $primary-color;
+            padding: 16px 24px;
+            border-radius: 8px 8px 0 0;
+
+            h3 {
+                color: white;
+                margin: 0;
+                font-size: 18px;
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            .modal-body {
+                padding: 24px;
+
+                .form-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    margin-bottom: 16px; // Added spacing
+
+                    label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: $text-main;
+                    }
+
+                    input,
+                    select,
+                    textarea {
+                        width: 100%;
+                        padding: 10px 12px;
+                        border: 1px solid $gray-200;
+                        border-radius: 6px;
+                        outline: none;
+                        font-family: inherit;
+                        font-size: 14px;
+                        color: $text-main;
+                        background: $white;
+
+                        &:focus {
+                            border-color: $primary-color;
+                        }
+                    }
+
+                    &.row {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 15px;
+
+                        .col {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                        }
+                    }
+                }
+            }
+
+            .modal-actions {
+                padding: 16px 24px;
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                background-color: $gray-50;
+                border-top: 1px solid $gray-200;
+                border-radius: 0 0 8px 8px;
+
+                button {
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    border: none;
+                    transition: all 0.2s;
+
+                    &.btn-cancel {
+                        background-color: transparent;
+                        color: $secondary-color;
+                        border: 1px solid $gray-200;
+
+                        &:hover {
+                            background-color: $gray-200;
+                        }
+                    }
+
+                    &.btn-confirm.success {
+                        background-color: $primary-color;
+                        color: white;
+
+                        &:hover:not(:disabled) {
+                            background-color: $primary-dark;
+                        }
+
+                        &:disabled {
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

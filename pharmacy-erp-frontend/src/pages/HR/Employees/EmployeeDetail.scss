@@ -1,0 +1,657 @@
+// src/pages/EmployeeDetail.scss
+
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$text-main: #343a40;
+$text-light: #868e96;
+$bg-color: #f8f9fa;
+$white: #ffffff;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+.employee-detail-container {
+  padding: 30px;
+  background-color: $bg-color;
+  min-height: 100vh;
+  font-family: "Be Vietnam Pro", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  // --- Header ---
+  .detail-header {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .btn-back-link {
+      background: none;
+      border: none;
+      color: $text-light;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+
+    h2 {
+      font-size: 18px;
+      color: $text-light;
+      margin: 0;
+    }
+  }
+
+  // --- Main Card ---
+  .detail-card {
+    background: $white;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 12px;
+    box-shadow: $shadow;
+    display: flex;
+    overflow: hidden;
+
+    // Cột trái: Avatar & Tổng quan
+    .card-left {
+      width: 300px;
+      background: linear-gradient(180deg, #e7f5ff 0%, #ffffff 50%);
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-right: 1px solid #f1f3f5;
+
+      .avatar-wrapper {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid $white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 15px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .fullname {
+        font-size: 20px;
+        font-weight: 700;
+        color: $text-main;
+        margin: 0 0 5px;
+        text-align: center;
+      }
+
+      .position {
+        font-size: 14px;
+        color: $primary-color;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .status-tag {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 15px;
+
+        &.active {
+          background: #d3f9d8;
+          color: #2b8a3e;
+        }
+
+        &.resigned {
+          background: #ffe3e3;
+          color: #c92a2a;
+        }
+      }
+
+      .roles-list {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .role-badge {
+          background: $text-main;
+          color: $white;
+          font-size: 10px;
+          padding: 3px 8px;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    // Cột phải: Chi tiết
+    .card-right {
+      flex: 1;
+      padding: 40px;
+
+      .section-title {
+        font-size: 16px;
+        text-transform: uppercase;
+        color: $text-light;
+        border-bottom: 1px solid #f1f3f5;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr; // 2 cột
+        gap: 30px;
+
+        .info-group {
+          label {
+            display: block;
+            font-size: 13px;
+            color: $text-light;
+            margin-bottom: 6px;
+          }
+
+          p {
+            font-size: 16px;
+            font-weight: 500;
+            color: $text-main;
+            margin: 0;
+
+            &.salary {
+              font-family: monospace;
+              color: #2b8a3e; // Xanh lá tiền tệ
+              font-weight: 700;
+              font-size: 18px;
+            }
+
+            .user-ref {
+              background: #f1f3f5;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 13px;
+              border: 1px solid #dee2e6;
+
+              &.pointer {
+                cursor: pointer;
+                transition: all 0.2s;
+
+                &:hover {
+                  background: #e7f5ff;
+                  border-color: $primary-color;
+                  color: darken($primary-color, 10%);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .action-footer {
+        margin-top: 40px;
+        display: flex;
+        justify-content: flex-end;
+
+        .btn-edit {
+          padding: 10px 20px;
+          background-color: $primary-color;
+          color: $white;
+          border: none;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &:hover {
+            background-color: darken($primary-color, 10%);
+          }
+        }
+      }
+    }
+  }
+
+  // --- Error State ---
+  &.error-state {
+    justify-content: center;
+
+    .error-card {
+      background: $white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: $shadow;
+
+      .icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      h3 {
+        color: #c92a2a;
+        margin-bottom: 10px;
+      }
+
+      p {
+        color: $text-light;
+        margin-bottom: 20px;
+      }
+
+      .btn-back {
+        padding: 10px 24px;
+        background: $text-main;
+        color: $white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  // --- CARD LỊCH SỬ CÔNG TÁC ---
+  .history-card {
+    background: $white;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 12px;
+    box-shadow: $shadow;
+    overflow: hidden;
+    margin-top: 24px;
+
+    .card-header-simple {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        color: $text-main;
+        font-weight: 700;
+      }
+
+      .btn-create-proposal {
+        background: $primary-color;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background: darken($primary-color, 8%);
+        }
+      }
+    }
+
+    .history-list {
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .history-item {
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+
+      &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+
+      .history-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .change-type {
+            font-weight: 700;
+            color: $primary-color;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 4px;
+
+            // Type specific colors
+            &.resigned {
+              background: rgba(#fa5252, 0.1);
+              color: #fa5252;
+            }
+
+            &.promotion,
+            &.promotion_with_salary {
+              background: rgba(#7950f2, 0.1);
+              color: #7950f2;
+            }
+
+            &.rehired,
+            &.hired {
+              background: rgba(#0ca678, 0.1);
+              color: #0ca678;
+            }
+
+            &.salary_increase {
+              background: rgba(#228be6, 0.1);
+              color: #228be6;
+            }
+          }
+
+          .effective-date {
+            font-size: 13px;
+            color: $text-light;
+          }
+        }
+      }
+
+      .history-item-body {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 24px;
+
+        .info-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+
+          .label {
+            color: $text-light;
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 100px;
+          }
+
+          .value {
+            color: $text-main;
+            font-weight: 500;
+          }
+
+          .change-flow {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .arrow {
+              color: #adb5bd;
+              font-size: 12px;
+            }
+
+            .new-val {
+              font-weight: 600;
+              color: $text-main;
+            }
+
+            .old-salary {
+              text-decoration: line-through;
+              color: #adb5bd;
+              font-size: 13px;
+            }
+
+            .new-salary {
+              color: #2b8a3e;
+              font-weight: 700;
+              font-family: monospace;
+            }
+          }
+
+          .user-ref {
+            background: #f1f3f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            border: 1px solid #dee2e6;
+
+            &.pointer {
+              cursor: pointer;
+              transition: all 0.2s;
+
+              &:hover {
+                background: #e7f5ff;
+                border-color: $primary-color;
+                color: darken($primary-color, 10%);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .no-data {
+      text-align: center;
+      font-style: italic;
+      color: $text-light;
+      padding: 30px;
+    }
+
+    // Badge Status
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+
+      &.approved {
+        background-color: rgba(#40c057, 0.1);
+        color: #40c057;
+      }
+
+      &.pending {
+        background-color: rgba(#fab005, 0.1);
+        color: #f08c00;
+      }
+
+      &.rejected {
+        background-color: rgba(#fa5252, 0.1);
+        color: #fa5252;
+        text-decoration: line-through;
+      }
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .detail-card {
+    flex-direction: column;
+
+    .card-left {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #f1f3f5;
+    }
+
+    .card-right .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// === PROPOSAL MODAL ===
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.proposal-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9ecef;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #adb5bd;
+      cursor: pointer;
+      line-height: 1;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      border-radius: 4px;
+
+      &:hover {
+        color: #495057;
+        background-color: #e9ecef;
+      }
+    }
+  }
+
+  .modal-body-custom {
+    padding: 24px;
+    overflow-y: auto;
+
+    .form-info {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: #495057;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 6px;
+
+        .required {
+          color: #fa5252;
+        }
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #212529;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+    }
+  }
+
+  .modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+
+    .btn-cancel {
+      background: white;
+      border: 1px solid #dee2e6;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #495057;
+
+      &:hover {
+        background: #f1f3f5;
+      }
+    }
+
+    .btn-submit {
+      background: $primary-color;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: darken($primary-color, 8%);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

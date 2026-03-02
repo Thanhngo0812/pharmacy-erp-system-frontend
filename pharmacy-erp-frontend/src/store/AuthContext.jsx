@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { AuthService } from "../services/authService";
+import { AuthService } from "../services/AuthService";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
@@ -9,6 +9,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // HÃY ĐỔI THÀNH:
+
     const saved = localStorage.getItem("user");
     if (saved) {
       const parsed = JSON.parse(saved);
@@ -21,7 +23,7 @@ export function AuthProvider({ children }) {
         setUser(null);
       }
     }
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   const login = async (userData) => {
@@ -41,8 +43,17 @@ export function AuthProvider({ children }) {
     return AuthService.checkValidToken();
   };
 
+  const updateUser = (updatedData) => {
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+      const newUser = { ...prevUser, ...updatedData };
+      localStorage.setItem("user", JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, checkValidToken, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, checkValidToken, loading, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

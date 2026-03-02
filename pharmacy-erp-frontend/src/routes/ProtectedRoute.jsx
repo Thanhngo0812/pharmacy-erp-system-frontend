@@ -8,9 +8,11 @@ export default function ProtectedRoute({ children, roles }) {
     return <Navigate to="/login" replace />;
   }
   if (loading) return null;
-  if (!user.roles.some((item) => roles.includes(item))) {
-    // alert("Ban khong co quyen truy cap trang nay!");
-    return <Navigate to="/admin" replace />;
+  if (roles && roles.length > 0) {
+    if (!user.roles || !user.roles.some((item) => roles.includes(item))) {
+      // alert("Ban khong co quyen truy cap trang nay!");
+      return <Navigate to="/admin" replace />;
+    }
   }
 
   return children;

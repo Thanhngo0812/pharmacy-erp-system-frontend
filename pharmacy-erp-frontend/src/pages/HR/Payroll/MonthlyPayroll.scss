@@ -1,0 +1,721 @@
+// src/pages/HR/Payroll/MonthlyPayroll.scss
+
+$primary-color: #65A7E3;
+$primary-dark: #4093DE;
+$primary-light: #e7f5ff;
+
+$secondary-color: #868e96;
+$success-color: #40c057;
+$danger-color: #fa5252;
+$warning-color: #fab005;
+
+$white: #ffffff;
+$gray-50: #f8f9fa;
+$gray-100: #f1f3f5;
+$gray-200: #dee2e6;
+$gray-300: #ced4da;
+$text-main: #212529;
+$text-light: #adb5bd;
+
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+$font-family: "Be Vietnam Pro", sans-serif;
+
+.monthly-payroll-container {
+    font-family: $font-family;
+    position: relative;
+
+    &.embedded {
+        padding: 0;
+        min-height: auto;
+    }
+
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(4px); // Tạo hiệu ứng mờ nền sang trọng
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $border-radius;
+        transition: all 0.3s ease;
+    }
+
+    // --- Month Picker Bar ---
+    .month-picker-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: $white;
+        padding: 16px 20px;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+
+        .picker-label {
+            font-weight: 600;
+            color: $text-main;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        select,
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid $gray-200;
+            border-radius: $border-radius;
+            font-size: 14px;
+            font-family: inherit;
+            color: $text-main;
+            background-color: $white;
+            outline: none;
+            height: 38px;
+            transition: all 0.2s;
+
+            &:focus {
+                border-color: $primary-color;
+                box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            }
+        }
+
+        .month-select {
+            width: 130px;
+        }
+
+        .year-input {
+            width: 90px;
+        }
+
+        .btn-calculate {
+            padding: 8px 20px;
+            background-color: $primary-color;
+            color: $white;
+            border: none;
+            border-radius: $border-radius;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba($primary-color, 0.3);
+
+            &:hover:not(:disabled) {
+                background-color: $primary-dark;
+                transform: translateY(-1px);
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            background-color: $success-color;
+            color: $white;
+            border: none;
+            border-radius: $border-radius;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            &:hover:not(:disabled) {
+                background-color: darken($success-color, 8%);
+                transform: translateY(-1px);
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+
+        .btn-export-pdf {
+            margin-left: auto;
+            margin-right: 10px;
+            padding: 8px 16px;
+            background-color: #fa5252; // Bootstrap red / danger
+            color: $white;
+            border: none;
+            border-radius: $border-radius;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            &:hover:not(:disabled) {
+                background-color: darken(#fa5252, 8%);
+                transform: translateY(-1px);
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    // --- Summary Cards ---
+    .summary-cards {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+
+        .summary-card {
+            flex: 1;
+            background: $white;
+            border-radius: $border-radius;
+            box-shadow: $box-shadow;
+            border: 1px solid $gray-200;
+            padding: 18px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            }
+
+            .summary-label {
+                font-size: 12px;
+                font-weight: 700;
+                color: $secondary-color;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .summary-value {
+                font-size: 24px;
+                font-weight: 700;
+                color: $text-main;
+            }
+
+            &.total-employees {
+                border-left: 4px solid $primary-color;
+
+                .summary-value {
+                    color: $primary-color;
+                }
+            }
+
+            &.total-payroll {
+                border-left: 4px solid $success-color;
+
+                .summary-value {
+                    color: $success-color;
+                    font-family: "Consolas", monospace;
+                }
+            }
+
+            &.total-bonus {
+                border-left: 4px solid #7950f2;
+
+                .summary-value {
+                    color: #7950f2;
+                    font-family: "Consolas", monospace;
+                }
+            }
+
+            &.total-deduction {
+                border-left: 4px solid $danger-color;
+
+                .summary-value {
+                    color: $danger-color;
+                    font-family: "Consolas", monospace;
+                }
+            }
+        }
+    }
+
+    // --- Filter Bar ---
+    .filter-card {
+        background: $white;
+        padding: 16px 20px;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        margin-bottom: 20px;
+        border: 1px solid $gray-200;
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+
+            .filter-group {
+                flex: 1;
+                min-width: 150px;
+
+                input,
+                select {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid $gray-200;
+                    border-radius: $border-radius;
+                    font-size: 14px;
+                    font-family: inherit;
+                    color: $text-main;
+                    background-color: $white;
+                    outline: none;
+                    height: 38px;
+                    transition: all 0.2s;
+
+                    &::placeholder {
+                        color: $text-light;
+                    }
+
+                    &:focus {
+                        border-color: $primary-color;
+                        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+                    }
+                }
+
+                &.sort-group {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    min-width: 220px;
+
+                    select {
+                        flex: 1;
+                    }
+
+                    .order-select {
+                        max-width: 110px;
+                    }
+                }
+            }
+
+            .btn-reset {
+                padding: 8px 16px;
+                border-radius: $border-radius;
+                font-weight: 600;
+                font-size: 13px;
+                background: $gray-50;
+                border: 1px solid $gray-200;
+                color: $text-main;
+                cursor: pointer;
+                height: 38px;
+                transition: all 0.2s;
+
+                &:hover {
+                    background: $gray-100;
+                }
+            }
+        }
+    }
+
+    // --- Table ---
+    .table-card {
+        background: $white;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        border: 1px solid $gray-200;
+        overflow: hidden;
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .payroll-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+
+            thead {
+                background-color: $gray-50;
+                border-bottom: 2px solid $gray-200;
+
+                tr th {
+                    padding: 12px 14px;
+                    text-align: left;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: $secondary-color;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+                    white-space: nowrap;
+                }
+            }
+
+            tbody {
+                tr {
+                    border-bottom: 1px solid $gray-200;
+                    transition: background-color 0.1s;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $primary-light;
+                    }
+
+                    td {
+                        padding: 12px 14px;
+                        vertical-align: middle;
+                        font-size: 14px;
+                        color: $text-main;
+
+                        &.id-col {
+                            font-weight: 600;
+                            color: $secondary-color;
+                            width: 60px;
+                        }
+
+                        &.name-col {
+                            font-weight: 600;
+                            color: $primary-color;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        &.money-col {
+                            font-family: "Consolas", monospace;
+                            font-weight: 600;
+                            text-align: right;
+                            white-space: nowrap;
+                        }
+
+                        &.total-col {
+                            font-family: "Consolas", monospace;
+                            font-weight: 700;
+                            font-size: 15px;
+                            color: $success-color;
+                            text-align: right;
+                            white-space: nowrap;
+                        }
+
+                        &.deduction-col {
+                            color: $danger-color;
+                        }
+
+                        &.bonus-col {
+                            color: #7950f2;
+                        }
+
+                        .leave-days {
+                            color: $warning-color;
+                            font-weight: 600;
+                        }
+                    }
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 40px;
+                    color: $secondary-color;
+                    font-style: italic;
+                }
+            }
+        }
+    }
+
+    // --- Empty State ---
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: $white;
+        border-radius: $border-radius;
+        border: 1px solid $gray-200;
+        box-shadow: $box-shadow;
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: $text-main;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: $secondary-color;
+        }
+    }
+
+    // --- Detail Modal ---
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeIn 0.2s ease;
+
+        .modal-content {
+            background: $white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+            .modal-header {
+                background-color: $primary-color;
+                padding: 16px 24px;
+                border-radius: 12px 12px 0 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+
+                h3 {
+                    color: $white;
+                    margin: 0;
+                    font-size: 16px;
+                }
+
+                .btn-close {
+                    background: transparent;
+                    border: none;
+                    color: $white;
+                    font-size: 22px;
+                    cursor: pointer;
+                    padding: 0 4px;
+                    line-height: 1;
+                    opacity: 0.8;
+                    transition: opacity 0.2s;
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+            }
+
+            .modal-body {
+                padding: 24px;
+                overflow-y: auto;
+                flex: 1;
+
+                .detail-section {
+                    margin-bottom: 20px;
+
+                    .section-title {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: $text-main;
+                        margin-bottom: 12px;
+                        letter-spacing: 0.2px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        border-bottom: 1px solid $gray-200;
+                        padding-bottom: 6px;
+
+                        i {
+                            color: $primary-color;
+                            font-size: 15px;
+                        }
+                    }
+
+                    .info-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 12px;
+
+                        .info-item {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 2px;
+
+                            .label {
+                                font-size: 12px;
+                                color: $secondary-color;
+                                font-weight: 600;
+                            }
+
+                            .value {
+                                font-size: 15px;
+                                font-weight: 600;
+                                color: $text-main;
+
+                                &.money {
+                                    font-family: "Consolas", monospace;
+                                }
+
+                                &.highlight {
+                                    color: $success-color;
+                                    font-size: 18px;
+                                    font-weight: 700;
+                                }
+
+                                &.danger {
+                                    color: #e03131; // Đỏ trầm hơn
+                                }
+
+                                &.bonus {
+                                    color: $primary-dark; // Xanh dương thay cho tím
+                                }
+                            }
+                        }
+                    }
+
+                    .detail-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 13px;
+
+                        th {
+                            background: $gray-50;
+                            padding: 8px 10px;
+                            text-align: left;
+                            font-weight: 700;
+                            color: $secondary-color;
+                            border-bottom: 2px solid $gray-200;
+                            font-size: 11px;
+                            text-transform: uppercase;
+                        }
+
+                        td {
+                            padding: 8px 10px;
+                            border-bottom: 1px solid $gray-200;
+                            color: $text-main;
+
+                            &.money {
+                                font-family: "Consolas", monospace;
+                                font-weight: 600;
+                                text-align: right;
+
+                                &.danger {
+                                    color: #e03131;
+                                }
+
+                                &.bonus {
+                                    color: $primary-dark;
+                                }
+                            }
+                        }
+                    }
+
+                    .no-data-text {
+                        font-size: 13px;
+                        color: $text-light;
+                        font-style: italic;
+                        padding: 8px 0;
+                    }
+                }
+
+                .total-bar {
+                    background: $gray-50;
+                    border: 1px solid $gray-200;
+                    border-radius: $border-radius;
+                    padding: 16px 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-top: 10px;
+
+                    .total-label {
+                        font-size: 15px;
+                        font-weight: 600;
+                        color: $text-light;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+
+                        i {
+                            color: $secondary-color;
+                        }
+                    }
+
+                    .total-value {
+                        font-size: 22px;
+                        font-weight: 700;
+                        color: $primary-dark;
+                        font-family: "Consolas", monospace;
+                    }
+                }
+            }
+
+            .modal-footer {
+                padding: 12px 24px;
+                border-top: 1px solid $gray-200;
+                display: flex;
+                justify-content: flex-end;
+
+                .btn-close-modal {
+                    padding: 8px 20px;
+                    border: 1px solid $gray-200;
+                    background: $gray-50;
+                    border-radius: $border-radius;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+
+                    &:hover {
+                        background: $gray-100;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .monthly-payroll-container {
+        .month-picker-bar {
+            flex-direction: column;
+            align-items: stretch;
+
+            .btn-export {
+                margin-left: 0;
+            }
+        }
+
+        .summary-cards {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-card .filter-form .filter-group {
+            min-width: 100%;
+        }
+
+        .modal-overlay .modal-content .modal-body .detail-section .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+}
