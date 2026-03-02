@@ -1,7 +1,7 @@
 
 import { useContext, useEffect, useState } from "react";
-import AdminHeader from "./AdminHeader";
-import AdminSidebar from "./AdminSidebar";
+import AdminHeader from "../../components/Header/AdminHeader";
+import AdminSidebar from "../../components/sidebar/AdminSidebar";
 import { Navigate, Outlet } from "react-router-dom";
 import "./AdminLayout.scss";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
