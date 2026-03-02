@@ -1,5 +1,5 @@
 # Stage 1: Build the React Application
-FROM node:21-alpine as build
+FROM node:21-alpine AS build
 WORKDIR /app
 # Khai báo ARG để nhận biến từ build-args của GitHub Actions
 ARG VITE_API_URL
