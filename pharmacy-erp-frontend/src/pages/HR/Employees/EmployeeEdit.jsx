@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useContext, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { AuthService } from "../../../services/authService";
+import { AuthService } from "../../../services/AuthService";
 import { AuthContext } from "../../../store/AuthContext";
 import LoadingSpinnerMini from "../../../components/LoadingSpinner/LoadingSpinnerMini";
 import { toast } from "react-toastify";

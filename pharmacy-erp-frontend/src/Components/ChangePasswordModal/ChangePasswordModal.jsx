@@ -2,7 +2,7 @@
 import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../store/AuthContext";
-import { AuthService } from "../../services/authService";
+import { AuthService } from "../../services/AuthService";
 import LoadingSpinnerMini from "../LoadingSpinner/LoadingSpinnerMini";
 import "./ChangePasswordModal.scss";
 

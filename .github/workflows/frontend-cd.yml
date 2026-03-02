@@ -45,7 +45,6 @@ jobs:
             # Đảm bảo file .env tồn tại
             touch .env
             grep -q "^DOCKER_USERNAME=" .env && sed -i "s|^DOCKER_USERNAME=.*|DOCKER_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}|" .env || echo "DOCKER_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env
-            grep -q "^FRONTEND_APP_TAG=" .env && sed -i "s|^FRONTEND_APP_TAG=.*|FRONTEND_APP_TAG=latest|" .env || echo "FRONTEND_APP_TAG=latest" >> .env
             
             # 3. Kéo bản mới nhất của frontend
             docker compose pull frontend-app
