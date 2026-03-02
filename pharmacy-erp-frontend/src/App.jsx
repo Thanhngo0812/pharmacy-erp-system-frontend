@@ -24,6 +24,7 @@ import SalaryList from "./pages/HR/Salary/SalaryList";
 import BonusList from "./pages/HR/Bonuses/BonusList";
 import IncomeManagement from "./pages/HR/Income/IncomeManagement";
 import MySalary from "./pages/User/MySalary/MySalary";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -131,7 +132,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
         <ToastContainer
           position="top-right"
