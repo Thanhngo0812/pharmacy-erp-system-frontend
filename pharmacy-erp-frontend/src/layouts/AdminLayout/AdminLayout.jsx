@@ -22,13 +22,7 @@ const AdminLayout = () => {
     }
   };
   const { checkValidToken, loading } = useContext(AuthContext);
-  if (loading) {
-    return (
-      <div className="loading-screen-center">
-        <LoadingSpinner fullScreen={true} text="Đang tải dữ liệu hệ thống..." />
-      </div>
-    );
-  }
+
   useEffect(() => {
     const handleResize = () => {
       setOpenSidebar(true);
@@ -37,9 +31,19 @@ const AdminLayout = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="loading-screen-center">
+        <LoadingSpinner fullScreen={true} text="Đang tải dữ liệu hệ thống..." />
+      </div>
+    );
+  }
+
   if (!checkValidToken()) {
     return <Navigate to="/login" replace />;
   }
+
   return (
     <>
       <div className="admin-container">
