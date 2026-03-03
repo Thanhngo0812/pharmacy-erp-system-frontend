@@ -150,11 +150,11 @@ const MonthlyPayroll = ({ embedded = false }) => {
 
     return (
         <div className={`monthly-payroll-container ${embedded ? 'embedded' : ''}`}>
-            {isProcessing && (
+            {isProcessing && !loading && (
                 <div className="loading-overlay">
                     <LoadingSpinnerMini
                         fullScreen={false}
-                        text={loading ? "Đang xử lý dữ liệu..." : "Đang chuẩn bị tệp..."}
+                        text="Đang chuẩn bị tệp..."
                     />
                 </div>
             )}
@@ -274,8 +274,12 @@ const MonthlyPayroll = ({ embedded = false }) => {
             {/* Error */}
             {error && <div className="error-message" style={{ background: '#fff5f5', color: '#fa5252', padding: '15px', borderRadius: '8px', border: '1px solid #ffc9c9', marginBottom: '20px', textAlign: 'center' }}>{error}</div>}
 
-            {/* Loading (Đã chuyển sang dùng overlay ở trên) */}
-            {/* {loading && <LoadingSpinnerMini fullScreen={false} text="Đang tính lương..." />} */}
+            {/* Loading */}
+            {loading && (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+                    <LoadingSpinnerMini fullScreen={false} text="Đang xử lý dữ liệu..." />
+                </div>
+            )}
 
             {/* Table */}
             {!loading && payrollData && (
