@@ -273,7 +273,6 @@ const EmployeeList = () => {
   const handleReset = () => setFilters({ name: "", phone: "", status: "", sortBy: "id", order: "asc" });
   const handleResetHired = () => setHiredFilters({ sortBy: "id", order: "asc", status: "", employeeName: "", proposedById: "", id: "" });
 
-  if (loading && employees.length === 0) return <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}><LoadingSpinnerMini fullScreen={false} text="Đang tải dữ liệu..." /></div>;
 
   return (
     <div className="employee-list-container">
@@ -348,7 +347,11 @@ const EmployeeList = () => {
             </div>
           </div>
 
-          {error ? <div className="error-message">{error}</div> : (
+          {error ? <div className="error-message">{error}</div> : loading && employees.length === 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+              <LoadingSpinnerMini fullScreen={false} text="Đang tải dữ liệu..." />
+            </div>
+          ) : (
             <div className="table-card">
               <div className="table-responsive">
                 <table className="employee-table">
