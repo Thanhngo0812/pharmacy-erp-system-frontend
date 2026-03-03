@@ -206,7 +206,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                                 <label>Mật khẩu mới:</label>
                                 <input
                                     type="password"
-                                    className={`form - control ${errors.newPassword ? 'is-invalid' : ''} `}
+                                    className={`form-control ${errors.newPassword ? 'is-invalid' : ''}`}
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)"
@@ -219,7 +219,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                                 <label>Xác nhận mật khẩu:</label>
                                 <input
                                     type="password"
-                                    className={`form - control ${errors.confirmPassword ? 'is-invalid' : ''} `}
+                                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Nhập lại mật khẩu mới"

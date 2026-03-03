@@ -85,8 +85,8 @@ const MySalary = () => {
                 </div>
 
                 {loading && (
-                    <div className="loading-state">
-                        <LoadingSpinnerMini />
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+                        <LoadingSpinnerMini fullScreen={false} />
                     </div>
                 )}
 
