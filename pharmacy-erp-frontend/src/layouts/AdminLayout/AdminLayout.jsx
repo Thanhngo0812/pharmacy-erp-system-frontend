@@ -1,4 +1,3 @@
-
 import { useContext, useEffect, useState } from "react";
 import AdminHeader from "../../components/Header/AdminHeader";
 import AdminSidebar from "../../components/sidebar/AdminSidebar";
@@ -11,22 +10,23 @@ const AdminLayout = () => {
   // hien thi sidebar tren desktop
   const [openSidebar, setOpenSidebar] = useState(true);
   // hien thi sidebar tren mobile
-  const [showSidebar, setShowSidebar] = useState(false);
+  // const [showSidebar, setShowSidebar] = useState(false);
   const toggleSidebar = () => {
-    if (window.innerWidth < 992) {
-      // mobile
-      setShowSidebar(!showSidebar);
-    } else {
-      // desktop
-      setOpenSidebar(!openSidebar);
-    }
+    // if (window.innerWidth < 992) {
+    //   // mobile
+    //   setShowSidebar(!showSidebar);
+    // } else {
+    //   // desktop
+    //   setOpenSidebar(!openSidebar);
+    // }
+    setOpenSidebar(!openSidebar);
   };
   const { checkValidToken, loading } = useContext(AuthContext);
 
   useEffect(() => {
     const handleResize = () => {
       setOpenSidebar(true);
-      setShowSidebar(false);
+      // setShowSidebar(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -49,7 +49,7 @@ const AdminLayout = () => {
       <div className="admin-container">
         <AdminSidebar
           openSidebar={openSidebar}
-          showSidebar={showSidebar}
+          // showSidebar={showSidebar}
           toggleSidebar={toggleSidebar}
         />
         <div className="header-content-container">
