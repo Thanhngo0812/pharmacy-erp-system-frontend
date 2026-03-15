@@ -1,8 +1,8 @@
 // src/pages/EmployeeList.scss
 
 // --- 1. Variables (Biến màu sắc theo chuẩn dự án) ---
-$primary-color: #65A7E3; // Màu xanh dương chuẩn từ Sidebar
-$primary-dark: #4093DE; // Màu hover từ Sidebar
+$primary-color: #65a7e3; // Màu xanh dương chuẩn từ Sidebar
+$primary-dark: #4093de; // Màu hover từ Sidebar
 $primary-light: #ecf3ff; // Màu active từ Sidebar
 
 $secondary-color: #868e96;
@@ -446,7 +446,7 @@ $font-family: "Be Vietnam Pro", sans-serif;
       right: 0;
       bottom: 0;
       background-color: #cbd5e1;
-      transition: .4s;
+      transition: 0.4s;
       border-radius: 34px;
 
       &:before {
@@ -457,16 +457,16 @@ $font-family: "Be Vietnam Pro", sans-serif;
         left: 3px;
         bottom: 3px;
         background-color: white;
-        transition: .4s;
+        transition: 0.4s;
         border-radius: 50%;
       }
     }
 
-    input:checked+.slider {
+    input:checked + .slider {
       background-color: $success-color;
     }
 
-    input:checked+.slider:before {
+    input:checked + .slider:before {
       transform: translateX(20px);
     }
   }
@@ -493,72 +493,14 @@ $font-family: "Be Vietnam Pro", sans-serif;
   }
 }
 
-@media (max-width: 1024px) {
-  .employee-list-container {
-    padding: 16px;
-
-    .tabs-container {
-      width: 100%;
-      overflow-x: auto;
-    }
+//mobile
+@media (min-width: 280px) and (max-width: 575.98px) {
+  .pagination {
+    justify-content: center !important;
   }
-}
-
-@media (max-width: 768px) {
-  .employee-list-container {
-    .table-card {
-      display: none;
-    }
-
-    .mobile-employee-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-
-      .employee-card {
-        background: white;
-        border-radius: 12px;
-        padding: 16px;
-        border: 1px solid $gray-200;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-          border-bottom: 1px dashed $gray-100;
-          padding-bottom: 12px;
-        }
-
-        .card-body {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          font-size: 13px;
-
-          .info-row {
-            display: flex;
-            justify-content: space-between;
-
-            .label {
-              color: $secondary-color;
-            }
-
-            .value {
-              font-weight: 500;
-            }
-          }
-        }
-
-        .card-footer {
-          margin-top: 12px;
-          padding-top: 12px;
-          border-top: 1px solid $gray-50;
-          display: flex;
-          justify-content: space-between;
-        }
-      }
+  .table-card {
+    .table-responsive {
+      // display: none;
     }
   }
 }

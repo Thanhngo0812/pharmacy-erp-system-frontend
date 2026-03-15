@@ -26,7 +26,7 @@ const EmployeeList = () => {
     status: "",
     employeeName: "",
     proposedById: "",
-    id: ""
+    id: "",
   });
   const [hiredCurrentPage, setHiredCurrentPage] = useState(1);
   const hiredItemsPerPage = 5;
@@ -49,7 +49,7 @@ const EmployeeList = () => {
     title: "",
     message: "",
     actionType: "",
-    showInput: false
+    showInput: false,
   });
 
   const [reason, setReason] = useState("");
@@ -97,7 +97,7 @@ const EmployeeList = () => {
       title,
       message,
       actionType: action,
-      showInput: action === "resign" || action === "rehire"
+      showInput: action === "resign" || action === "rehire",
     });
   };
 
@@ -111,7 +111,7 @@ const EmployeeList = () => {
         ? `Bạn có chắc chắn muốn duyệt hồ sơ cho ${request.employeeName}? Nhân viên sẽ được chuyển sang trạng thái Đang làm việc.`
         : `Bạn có chắc chắn muốn từ chối hồ sơ cho ${request.employeeName}?`,
       actionType: isApproved ? "approve_hired" : "reject_hired",
-      showInput: false
+      showInput: false,
     });
   };
 
@@ -122,10 +122,18 @@ const EmployeeList = () => {
     if (actionType === "lock" || actionType === "unlock") {
       const isLocking = actionType === "lock";
       const oldEmployees = [...employees];
-      setEmployees(employees.map(emp => emp.id === employee.id ? { ...emp, isActive: !isLocking } : emp));
+      setEmployees(
+        employees.map((emp) =>
+          emp.id === employee.id ? { ...emp, isActive: !isLocking } : emp,
+        ),
+      );
       try {
         await AuthService.toggleLockAccount(employee.id, isLocking);
-        toast.info(isLocking ? "Đã khóa tài khoản thành công!" : "Đã mở khóa tài khoản thành công!");
+        toast.info(
+          isLocking
+            ? "Đã khóa tài khoản thành công!"
+            : "Đã mở khóa tài khoản thành công!",
+        );
       } catch (err) {
         setEmployees(oldEmployees);
         toast.error("Lỗi: Không thể cập nhật trạng thái tài khoản.");
@@ -133,8 +141,9 @@ const EmployeeList = () => {
     } else if (actionType === "resign" || actionType === "rehire") {
       try {
         const requestData = {
-          date: new Date().toISOString().split('T')[0],
-          reason: reason.trim() || "Cập nhật từ trang Quản lý nhân viên (Admin)"
+          date: new Date().toISOString().split("T")[0],
+          reason:
+            reason.trim() || "Cập nhật từ trang Quản lý nhân viên (Admin)",
         };
         if (actionType === "resign") {
           await AuthService.resignEmployee(employee.id, requestData);
@@ -155,11 +164,16 @@ const EmployeeList = () => {
       } catch (err) {
         toast.error("Lỗi: Không thể xóa nhân viên.");
       }
-    } else if (actionType === "approve_hired" || actionType === "reject_hired") {
+    } else if (
+      actionType === "approve_hired" ||
+      actionType === "reject_hired"
+    ) {
       const isApproved = actionType === "approve_hired";
       try {
         await AuthService.approveHiredCareerChange(employee.id, isApproved);
-        toast.success(`Đã ${isApproved ? "duyệt" : "từ chối"} hồ sơ thành công`);
+        toast.success(
+          `Đã ${isApproved ? "duyệt" : "từ chối"} hồ sơ thành công`,
+        );
         fetchHiredRequests();
         fetchEmployees();
       } catch (error) {
@@ -168,7 +182,8 @@ const EmployeeList = () => {
     }
   };
 
-  const handleCloseModal = () => setModalConfig({ ...modalConfig, isOpen: false });
+  const handleCloseModal = () =>
+    setModalConfig({ ...modalConfig, isOpen: false });
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -187,7 +202,9 @@ const EmployeeList = () => {
   const fetchEmployees = async () => {
     setLoading(true);
     try {
-      const cleanParams = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ""));
+      const cleanParams = Object.fromEntries(
+        Object.entries(filters).filter(([_, v]) => v !== ""),
+      );
       const response = await AuthService.getEmployees(cleanParams);
       if (response && response.data) setEmployees(response.data);
     } catch (err) {
@@ -202,7 +219,9 @@ const EmployeeList = () => {
     try {
       setHiredLoading(true);
       const params = { ...hiredFilters };
-      Object.keys(params).forEach(key => { if (!params[key]) delete params[key]; });
+      Object.keys(params).forEach((key) => {
+        if (!params[key]) delete params[key];
+      });
       const res = await AuthService.getHiredCareerChanges(params);
       setHiredRequests(res.data || res || []);
     } catch (error) {
@@ -224,7 +243,7 @@ const EmployeeList = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   const totalPages = Math.ceil(employees.length / itemsPerPage);
@@ -237,10 +256,13 @@ const EmployeeList = () => {
   const submitPage = () => {
     setIsEditingPage(false);
     let n = parseInt(inputPage);
-    if (isNaN(n) || n < 1) n = 1; else if (n > totalPages) n = totalPages;
+    if (isNaN(n) || n < 1) n = 1;
+    else if (n > totalPages) n = totalPages;
     setCurrentPage(n);
   };
-  const handlePageKeyDown = (e) => { if (e.key === "Enter") submitPage(); };
+  const handlePageKeyDown = (e) => {
+    if (e.key === "Enter") submitPage();
+  };
 
   const hiredTotalPages = Math.ceil(hiredRequests.length / hiredItemsPerPage);
   const handleHiredPageClick = () => {
@@ -251,28 +273,83 @@ const EmployeeList = () => {
   const submitHiredPage = () => {
     setIsEditingHiredPage(false);
     let n = parseInt(inputHiredPage);
-    if (isNaN(n) || n < 1) n = 1; else if (n > hiredTotalPages) n = hiredTotalPages;
+    if (isNaN(n) || n < 1) n = 1;
+    else if (n > hiredTotalPages) n = hiredTotalPages;
     setHiredCurrentPage(n);
   };
-  const handleHiredPageKeyDown = (e) => { if (e.key === "Enter") submitHiredPage(); };
+  const handleHiredPageKeyDown = (e) => {
+    if (e.key === "Enter") submitHiredPage();
+  };
 
-  const currentEmployees = employees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const currentHiredRequests = hiredRequests.slice((hiredCurrentPage - 1) * hiredItemsPerPage, hiredCurrentPage * hiredItemsPerPage);
+  const currentEmployees = employees.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+  const currentHiredRequests = hiredRequests.slice(
+    (hiredCurrentPage - 1) * hiredItemsPerPage,
+    hiredCurrentPage * hiredItemsPerPage,
+  );
 
-  const formatCurrency = (amount) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
-  const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString("vi-VN") : "N/A";
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  const formatDate = (dateString) =>
+    dateString ? new Date(dateString).toLocaleDateString("vi-VN") : "N/A";
 
   const getStatusBadgeHired = (status) => {
     switch (status) {
-      case "Approved": return <span className="status-badge active" style={{ backgroundColor: 'rgba(64, 192, 87, 0.1)', color: '#40c057' }}>Đã duyệt</span>;
-      case "Rejected": return <span className="status-badge rejected" style={{ backgroundColor: 'rgba(250, 82, 82, 0.1)', color: '#fa5252' }}>Từ chối</span>;
-      default: return <span className="status-badge pending" style={{ backgroundColor: 'rgba(250, 176, 5, 0.1)', color: '#e67300' }}>Chờ duyệt</span>;
+      case "Approved":
+        return (
+          <span
+            className="status-badge active"
+            style={{
+              backgroundColor: "rgba(64, 192, 87, 0.1)",
+              color: "#40c057",
+            }}
+          >
+            Đã duyệt
+          </span>
+        );
+      case "Rejected":
+        return (
+          <span
+            className="status-badge rejected"
+            style={{
+              backgroundColor: "rgba(250, 82, 82, 0.1)",
+              color: "#fa5252",
+            }}
+          >
+            Từ chối
+          </span>
+        );
+      default:
+        return (
+          <span
+            className="status-badge pending"
+            style={{
+              backgroundColor: "rgba(250, 176, 5, 0.1)",
+              color: "#e67300",
+            }}
+          >
+            Chờ duyệt
+          </span>
+        );
     }
   };
 
-  const handleReset = () => setFilters({ name: "", phone: "", status: "", sortBy: "id", order: "asc" });
-  const handleResetHired = () => setHiredFilters({ sortBy: "id", order: "asc", status: "", employeeName: "", proposedById: "", id: "" });
-
+  const handleReset = () =>
+    setFilters({ name: "", phone: "", status: "", sortBy: "id", order: "asc" });
+  const handleResetHired = () =>
+    setHiredFilters({
+      sortBy: "id",
+      order: "asc",
+      status: "",
+      employeeName: "",
+      proposedById: "",
+      id: "",
+    });
 
   return (
     <div className="employee-list-container">
@@ -286,25 +363,40 @@ const EmployeeList = () => {
         showInput={modalConfig.showInput}
         inputValue={reason}
         onInputChange={setReason}
-        inputPlaceholder={modalConfig.actionType === "rehire" ? "Nhập lý do làm lại..." : "Nhập lý do nghỉ việc..."}
+        inputPlaceholder={
+          modalConfig.actionType === "rehire"
+            ? "Nhập lý do làm lại..."
+            : "Nhập lý do nghỉ việc..."
+        }
       />
 
       <div className="page-header">
         <h2 className="page-title">Quản lý nhân viên</h2>
-        <button className="btn-add" onClick={() => navigate('/admin/employees/create')}>
+        <button
+          className="btn-add"
+          onClick={() => navigate("/admin/employees/create")}
+        >
           + Thêm mới
         </button>
       </div>
 
       {isAdmin && (
         <div className="tabs-container">
-          <button className={`tab-item ${activeTab === "employees" ? "active" : ""}`} onClick={() => setActiveTab("employees")}>
+          <button
+            className={`tab-item ${activeTab === "employees" ? "active" : ""}`}
+            onClick={() => setActiveTab("employees")}
+          >
             Nhân viên hiện có
           </button>
-          <button className={`tab-item ${activeTab === "hired" ? "active" : ""}`} onClick={() => setActiveTab("hired")}>
+          <button
+            className={`tab-item ${activeTab === "hired" ? "active" : ""}`}
+            onClick={() => setActiveTab("hired")}
+          >
             Hồ sơ tuyển dụng
-            {hiredRequests.filter(r => r.status === "Pending").length > 0 && (
-              <span className="tab-badge">{hiredRequests.filter(r => r.status === "Pending").length}</span>
+            {hiredRequests.filter((r) => r.status === "Pending").length > 0 && (
+              <span className="tab-badge">
+                {hiredRequests.filter((r) => r.status === "Pending").length}
+              </span>
             )}
           </button>
         </div>
@@ -315,13 +407,29 @@ const EmployeeList = () => {
           <div className="filter-card">
             <div className="filter-form">
               <div className="filter-group">
-                <input type="text" name="name" placeholder="Tìm theo tên..." value={filters.name} onChange={handleInputChange} />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Tìm theo tên..."
+                  value={filters.name}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="filter-group">
-                <input type="text" name="phone" placeholder="Tìm số điện thoại..." value={filters.phone} onChange={handleInputChange} />
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="Tìm số điện thoại..."
+                  value={filters.phone}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="filter-group">
-                <select name="status" value={filters.status} onChange={handleInputChange}>
+                <select
+                  name="status"
+                  value={filters.status}
+                  onChange={handleInputChange}
+                >
                   <option value="">-- Tất cả trạng thái --</option>
                   <option value="Active">Đang làm việc</option>
                   <option value="Resigned">Đã nghỉ</option>
@@ -330,26 +438,52 @@ const EmployeeList = () => {
                 </select>
               </div>
               <div className="filter-group sort-group">
-                <select name="sortBy" value={filters.sortBy} onChange={handleInputChange}>
+                <select
+                  name="sortBy"
+                  value={filters.sortBy}
+                  onChange={handleInputChange}
+                >
                   <option value="id">Sắp xếp: ID</option>
                   <option value="salary">Sắp xếp: Lương</option>
                   <option value="hireDate">Sắp xếp: Ngày vào</option>
                   <option value="lastName">Sắp xếp: Tên</option>
                 </select>
-                <select name="order" value={filters.order} onChange={handleInputChange} className="order-select">
+                <select
+                  name="order"
+                  value={filters.order}
+                  onChange={handleInputChange}
+                  className="order-select"
+                >
                   <option value="asc">Tăng ⬆</option>
                   <option value="desc">Giảm ⬇</option>
                 </select>
               </div>
               <div className="filter-actions">
-                <button type="button" onClick={handleReset} className="btn-reset">Đặt lại</button>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="btn-reset"
+                >
+                  Đặt lại
+                </button>
               </div>
             </div>
           </div>
 
-          {error ? <div className="error-message">{error}</div> : loading && employees.length === 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-              <LoadingSpinnerMini fullScreen={false} text="Đang tải dữ liệu..." />
+          {error ? (
+            <div className="error-message">{error}</div>
+          ) : loading && employees.length === 0 ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "60px 0",
+              }}
+            >
+              <LoadingSpinnerMini
+                fullScreen={false}
+                text="Đang tải dữ liệu..."
+              />
             </div>
           ) : (
             <div className="table-card">
@@ -374,44 +508,126 @@ const EmployeeList = () => {
                         <tr key={emp.id}>
                           <td>
                             <div className="user-info">
-                              <img src={emp.imageUrl || "https://res.cloudinary.com/dfcb3zzw9/image/upload/v1771060297/84760454-9909-44cf-ac6a-78c964a34ab4.png"} alt="avt" className="avatar-small" />
+                              <img
+                                src={
+                                  emp.imageUrl ||
+                                  "https://res.cloudinary.com/dfcb3zzw9/image/upload/v1771060297/84760454-9909-44cf-ac6a-78c964a34ab4.png"
+                                }
+                                alt="avt"
+                                className="avatar-small"
+                              />
                               <div className="user-details">
-                                <span className="fullname">{emp.lastName} {emp.firstName}</span>
-                                <span className="email-small">ID: {emp.id}</span>
+                                <span className="fullname">
+                                  {emp.lastName} {emp.firstName}
+                                </span>
+                                <span className="email-small">
+                                  ID: {emp.id}
+                                </span>
                               </div>
                             </div>
                           </td>
                           <td>{emp.positionName}</td>
                           <td>{emp.phone}</td>
-                          <td className="salary-text">{formatCurrency(emp.currentSalary)}</td>
+                          <td className="salary-text">
+                            {formatCurrency(emp.currentSalary)}
+                          </td>
                           <td>{formatDate(emp.hireDate)}</td>
-                          <td><span className={`status-badge ${emp.status?.toLowerCase()}`}>
-                            {emp.status === 'Active' ? 'Đang làm' : emp.status === 'Resigned' ? 'Đã nghỉ' : emp.status === 'Waiting' ? 'Chờ duyệt' : 'Từ chối'}
-                          </span></td>
-                          <td><span className={`mail-badge ${emp.mailStatus?.toLowerCase() || 'notsent'}`}>{emp.mailStatus || 'Chưa gửi'}</span></td>
+                          <td>
+                            <span
+                              className={`status-badge ${emp.status?.toLowerCase()}`}
+                            >
+                              {emp.status === "Active"
+                                ? "Đang làm"
+                                : emp.status === "Resigned"
+                                  ? "Đã nghỉ"
+                                  : emp.status === "Waiting"
+                                    ? "Chờ duyệt"
+                                    : "Từ chối"}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`mail-badge ${emp.mailStatus?.toLowerCase() || "notsent"}`}
+                            >
+                              {emp.mailStatus || "Chưa gửi"}
+                            </span>
+                          </td>
                           <td>
                             <label className="switch-toggle">
-                              <input type="checkbox" checked={emp.isActive} disabled={emp.status === 'Resigned' || emp.status === 'Waiting' || emp.status === 'Rejected'} onChange={() => openConfirmModal(emp, emp.isActive ? "lock" : "unlock")} />
+                              <input
+                                type="checkbox"
+                                checked={emp.isActive}
+                                disabled={
+                                  emp.status === "Resigned" ||
+                                  emp.status === "Waiting" ||
+                                  emp.status === "Rejected"
+                                }
+                                onChange={() =>
+                                  openConfirmModal(
+                                    emp,
+                                    emp.isActive ? "lock" : "unlock",
+                                  )
+                                }
+                              />
                               <span className="slider round"></span>
                             </label>
                           </td>
                           <td className="actions-cell">
                             <div className="action-buttons">
-                              <button className="action-btn view" onClick={() => navigate(`/admin/employees/${emp.id}`)}>Xem</button>
-                              <button className="action-btn edit" onClick={() => navigate(`/admin/employees/${emp.id}/edit`)}>Sửa</button>
-                              {emp.status === 'Waiting' ? (
-                                <button className="action-btn delete" onClick={() => openConfirmModal(emp, "delete")}>Xóa</button>
-                              ) : emp.status === 'Resigned' ? (
-                                <button className="action-btn rehire" onClick={() => openConfirmModal(emp, "rehire")}>Làm lại</button>
+                              <button
+                                className="action-btn view"
+                                onClick={() =>
+                                  navigate(`/admin/employees/${emp.id}`)
+                                }
+                              >
+                                Xem
+                              </button>
+                              <button
+                                className="action-btn edit"
+                                onClick={() =>
+                                  navigate(`/admin/employees/${emp.id}/edit`)
+                                }
+                              >
+                                Sửa
+                              </button>
+                              {emp.status === "Waiting" ? (
+                                <button
+                                  className="action-btn delete"
+                                  onClick={() =>
+                                    openConfirmModal(emp, "delete")
+                                  }
+                                >
+                                  Xóa
+                                </button>
+                              ) : emp.status === "Resigned" ? (
+                                <button
+                                  className="action-btn rehire"
+                                  onClick={() =>
+                                    openConfirmModal(emp, "rehire")
+                                  }
+                                >
+                                  Làm lại
+                                </button>
                               ) : (
-                                <button className="action-btn resign" onClick={() => openConfirmModal(emp, "resign")}>Nghỉ</button>
+                                <button
+                                  className="action-btn resign"
+                                  onClick={() =>
+                                    openConfirmModal(emp, "resign")
+                                  }
+                                >
+                                  Nghỉ
+                                </button>
                               )}
                             </div>
                           </td>
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan="9" className="no-data">Không có nhân viên</td></tr>
+                      <tr>
+                        <td colSpan="9" className="no-data">
+                          Không có nhân viên
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -419,15 +635,37 @@ const EmployeeList = () => {
 
               {totalPages > 0 && (
                 <div className="pagination">
-                  <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>&lt;</button>
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                  >
+                    &lt;
+                  </button>
                   <div className="page-display">
                     {isEditingPage ? (
-                      <input ref={inputRef} type="number" className="page-input" value={inputPage} onChange={handlePageInputChange} onBlur={submitPage} onKeyDown={handlePageKeyDown} min="1" max={totalPages} />
+                      <input
+                        ref={inputRef}
+                        type="number"
+                        className="page-input"
+                        value={inputPage}
+                        onChange={handlePageInputChange}
+                        onBlur={submitPage}
+                        onKeyDown={handlePageKeyDown}
+                        min="1"
+                        max={totalPages}
+                      />
                     ) : (
-                      <span className="page-text" onClick={handlePageClick}>Trang <b>{currentPage}</b> / {totalPages}</span>
+                      <span className="page-text" onClick={handlePageClick}>
+                        Trang <b>{currentPage}</b> / {totalPages}
+                      </span>
                     )}
                   </div>
-                  <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)}>&gt;</button>
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                  >
+                    &gt;
+                  </button>
                 </div>
               )}
             </div>
@@ -439,10 +677,28 @@ const EmployeeList = () => {
             <div className="filter-card">
               <div className="filter-form">
                 <div className="filter-group">
-                  <input type="text" placeholder="Tên nhân viên..." value={hiredFilters.employeeName} onChange={(e) => setHiredFilters(prev => ({ ...prev, employeeName: e.target.value }))} />
+                  <input
+                    type="text"
+                    placeholder="Tên nhân viên..."
+                    value={hiredFilters.employeeName}
+                    onChange={(e) =>
+                      setHiredFilters((prev) => ({
+                        ...prev,
+                        employeeName: e.target.value,
+                      }))
+                    }
+                  />
                 </div>
                 <div className="filter-group">
-                  <select value={hiredFilters.status} onChange={(e) => setHiredFilters(prev => ({ ...prev, status: e.target.value }))}>
+                  <select
+                    value={hiredFilters.status}
+                    onChange={(e) =>
+                      setHiredFilters((prev) => ({
+                        ...prev,
+                        status: e.target.value,
+                      }))
+                    }
+                  >
                     <option value="">Tất cả trạng thái</option>
                     <option value="Pending">Chờ duyệt</option>
                     <option value="Approved">Đã duyệt</option>
@@ -450,14 +706,29 @@ const EmployeeList = () => {
                   </select>
                 </div>
                 <div className="filter-actions">
-                  <button type="button" className="btn-reset" onClick={handleResetHired}>Đặt lại</button>
+                  <button
+                    type="button"
+                    className="btn-reset"
+                    onClick={handleResetHired}
+                  >
+                    Đặt lại
+                  </button>
                 </div>
               </div>
             </div>
 
             {hiredLoading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-                <LoadingSpinnerMini fullScreen={false} text="Đang tải dữ liệu..." />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "60px 0",
+                }}
+              >
+                <LoadingSpinnerMini
+                  fullScreen={false}
+                  text="Đang tải dữ liệu..."
+                />
               </div>
             ) : (
               <div className="table-card">
@@ -478,11 +749,35 @@ const EmployeeList = () => {
                       {hiredRequests.length === 0 ? (
                         <tr>
                           <td colSpan="7">
-                            <div className="no-data" style={{ padding: '60px 0', textAlign: 'center', background: '#f8f9fa', borderRadius: '8px', border: '1px dashed #dee2e6' }}>
-                              <div className="empty-icon" style={{ fontSize: '48px', color: '#ced4da', marginBottom: '10px' }}>
+                            <div
+                              className="no-data"
+                              style={{
+                                padding: "60px 0",
+                                textAlign: "center",
+                                background: "#f8f9fa",
+                                borderRadius: "8px",
+                                border: "1px dashed #dee2e6",
+                              }}
+                            >
+                              <div
+                                className="empty-icon"
+                                style={{
+                                  fontSize: "48px",
+                                  color: "#ced4da",
+                                  marginBottom: "10px",
+                                }}
+                              >
                                 <i className="bi bi-folder2-open"></i>
                               </div>
-                              <p style={{ color: '#868e96', fontSize: '15px', margin: 0 }}>Không có hồ sơ nào</p>
+                              <p
+                                style={{
+                                  color: "#868e96",
+                                  fontSize: "15px",
+                                  margin: 0,
+                                }}
+                              >
+                                Không có hồ sơ nào
+                              </p>
                             </div>
                           </td>
                         </tr>
@@ -493,15 +788,44 @@ const EmployeeList = () => {
                             <td>{req.employeeName}</td>
                             <td>{req.positionName}</td>
                             <td>{formatDate(req.effectiveDate)}</td>
-                            <td className="salary-text">{formatCurrency(req.newSalary)}</td>
+                            <td className="salary-text">
+                              {formatCurrency(req.newSalary)}
+                            </td>
                             <td>{getStatusBadgeHired(req.status)}</td>
                             <td>
                               <div className="action-buttons">
-                                <button className="action-btn view" onClick={() => navigate(`/admin/employees/${req.employeeId}`)}>Xem</button>
-                                {req.status === 'Pending' && (
+                                <button
+                                  className="action-btn view"
+                                  onClick={() =>
+                                    navigate(
+                                      `/admin/employees/${req.employeeId}`,
+                                    )
+                                  }
+                                >
+                                  Xem
+                                </button>
+                                {req.status === "Pending" && (
                                   <>
-                                    <button className="action-btn edit" style={{ background: '#d4edda', color: '#155724' }} onClick={() => openApproveConfirmModal(req, true)}>Duyệt</button>
-                                    <button className="action-btn delete" onClick={() => openApproveConfirmModal(req, false)}>Từ chối</button>
+                                    <button
+                                      className="action-btn edit"
+                                      style={{
+                                        background: "#d4edda",
+                                        color: "#155724",
+                                      }}
+                                      onClick={() =>
+                                        openApproveConfirmModal(req, true)
+                                      }
+                                    >
+                                      Duyệt
+                                    </button>
+                                    <button
+                                      className="action-btn delete"
+                                      onClick={() =>
+                                        openApproveConfirmModal(req, false)
+                                      }
+                                    >
+                                      Từ chối
+                                    </button>
                                   </>
                                 )}
                               </div>
@@ -515,15 +839,38 @@ const EmployeeList = () => {
 
                 {hiredTotalPages > 0 && (
                   <div className="pagination">
-                    <button disabled={hiredCurrentPage === 1} onClick={() => setHiredCurrentPage(prev => prev - 1)}>&lt;</button>
+                    <button
+                      disabled={hiredCurrentPage === 1}
+                      onClick={() => setHiredCurrentPage((prev) => prev - 1)}
+                    >
+                      &lt;
+                    </button>
                     <div className="page-display">
                       {isEditingHiredPage ? (
-                        <input ref={hiredInputRef} type="number" className="page-input" value={inputHiredPage} onChange={(e) => setInputHiredPage(e.target.value)} onBlur={submitHiredPage} onKeyDown={handleHiredPageKeyDown} />
+                        <input
+                          ref={hiredInputRef}
+                          type="number"
+                          className="page-input"
+                          value={inputHiredPage}
+                          onChange={(e) => setInputHiredPage(e.target.value)}
+                          onBlur={submitHiredPage}
+                          onKeyDown={handleHiredPageKeyDown}
+                        />
                       ) : (
-                        <span className="page-text" onClick={handleHiredPageClick}>Trang <b>{hiredCurrentPage}</b> / {hiredTotalPages}</span>
+                        <span
+                          className="page-text"
+                          onClick={handleHiredPageClick}
+                        >
+                          Trang <b>{hiredCurrentPage}</b> / {hiredTotalPages}
+                        </span>
                       )}
                     </div>
-                    <button disabled={hiredCurrentPage === hiredTotalPages} onClick={() => setHiredCurrentPage(prev => prev + 1)}>&gt;</button>
+                    <button
+                      disabled={hiredCurrentPage === hiredTotalPages}
+                      onClick={() => setHiredCurrentPage((prev) => prev + 1)}
+                    >
+                      &gt;
+                    </button>
                   </div>
                 )}
               </div>

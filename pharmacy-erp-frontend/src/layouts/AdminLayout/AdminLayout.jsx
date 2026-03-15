@@ -10,16 +10,17 @@ const AdminLayout = () => {
   // hien thi sidebar tren desktop
   const [openSidebar, setOpenSidebar] = useState(true);
   // hien thi sidebar tren mobile
-  // const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+  // hien thi sidebar tren tablet
+  const [showSidebarTablet, setShowSidebarTablet] = useState(false);
   const toggleSidebar = () => {
-    // if (window.innerWidth < 992) {
-    //   // mobile
-    //   setShowSidebar(!showSidebar);
-    // } else {
-    //   // desktop
-    //   setOpenSidebar(!openSidebar);
-    // }
-    setOpenSidebar(!openSidebar);
+    if (window.innerWidth >= 280 && window.innerWidth < 576) {
+      setShowSidebarMobile(!showSidebarMobile);
+    } else if (window.innerWidth >= 768 && window.innerWidth < 992) {
+      setShowSidebarTablet(!showSidebarTablet);
+    } else if (window.innerWidth >= 992) {
+      setOpenSidebar(!openSidebar);
+    }
   };
   const { checkValidToken, loading } = useContext(AuthContext);
 
@@ -49,7 +50,8 @@ const AdminLayout = () => {
       <div className="admin-container">
         <AdminSidebar
           openSidebar={openSidebar}
-          // showSidebar={showSidebar}
+          showSidebarMobile={showSidebarMobile}
+          showSidebarTablet={showSidebarTablet}
           toggleSidebar={toggleSidebar}
         />
         <div className="header-content-container">

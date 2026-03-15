@@ -2,7 +2,18 @@
   width: 280px;
   border-right: 1px solid white;
   transition: width 0.3s ease;
-  background-color: #65A7E3;
+  background-color: #65a7e3;
+  // position: relative;
+  overflow-y: auto;
+
+  .icon-close-mobile {
+    position: relative;
+    font-size: 24px;
+    color: white;
+    top: 10px;
+    right: -246px;
+    display: none;
+  }
 
   .sidebar-header {
     display: flex;
@@ -43,13 +54,12 @@
       }
 
       &:hover {
-        background-color: #4093DE;
-
+        background-color: #4093de;
       }
 
       &.active {
         background-color: #ecf3ff;
-        color: #65A7E3;
+        color: #65a7e3;
       }
 
       .dropdown-icon {
@@ -68,7 +78,9 @@
       max-height: 0;
       opacity: 0;
       overflow: hidden;
-      transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+      transition:
+        max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s ease;
 
       &.expanded {
         max-height: 350px;
@@ -84,9 +96,16 @@
         margin: 5px 10px;
         padding: 10px 15px; // Quay lại padding cũ
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.8); // Trắng hơi trong suốt để tạo hiệu ứng mờ nhạt
+        color: rgba(
+          255,
+          255,
+          255,
+          0.8
+        ); // Trắng hơi trong suốt để tạo hiệu ứng mờ nhạt
         border-radius: 8px;
-        transition: background-color 0.2s, color 0.2s;
+        transition:
+          background-color 0.2s,
+          color 0.2s;
 
         &:hover {
           color: white;
@@ -111,9 +130,74 @@
   }
 }
 
+.sidebar-overlay-mobile,
+.sidebar-overlay-tablet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 150;
+  display: none;
+}
+
+//Extra small devices
+@media (max-width: 279.98px) {
+}
+
+//Mobile
+@media (min-width: 280px) and (max-width: 575.98px) {
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+
+    .icon-close-mobile {
+      display: block;
+    }
+
+    &.show-mobile {
+      transform: translateX(0);
+    }
+  }
+  .sidebar-overlay-mobile {
+    display: block;
+  }
+}
+
 // Tablet
-// @media (min-width: 768px) and (max-width: 991.98px) {
-//   .sidebar-container {
-//     display: none;
-//   }
-// }
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+
+    .icon-close-mobile {
+      display: block;
+    }
+
+    &.show-tablet {
+      transform: translateX(0);
+    }
+  }
+  .sidebar-overlay-tablet {
+    display: block;
+  }
+}
+
+//Desktop
+@media (min-width: 992px) and (max-width: 1199.98px) {
+}
+
+//Extra large devices
+@media (min-width: 1200px) {
+}

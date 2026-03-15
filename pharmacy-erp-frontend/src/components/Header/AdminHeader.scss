@@ -26,7 +26,7 @@
     position: relative; /* QUAN TRỌNG: Làm điểm neo cho menu con */
     display: flex;
     align-items: center; /* 2. Căn giữa trục dọc (chữ sẽ tự nhảy vào giữa so với ảnh) */
-    margin-right: 5px;
+    // margin-right: 5px;
     .information-user {
       position: relative; /* QUAN TRỌNG: Làm điểm neo cho menu con */
       display: flex;
@@ -74,16 +74,16 @@
       }
     }
     .dropdown-menu {
-          position: absolute; 
-          top: 120%;
-          width: 70%;
-          margin-left:15% ;
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn header */
-          border: 1px solid white;
-          z-index: 100;       /* Đảm bảo nó nổi lên trên các thành phần khác */
-          overflow: hidden;   /* Để border-radius không bị che bởi item con */
+      position: absolute;
+      top: 120%;
+      width: 70%;
+      margin-left: 15%;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn header */
+      border: 1px solid white;
+      z-index: 100; /* Đảm bảo nó nổi lên trên các thành phần khác */
+      overflow: hidden; /* Để border-radius không bị che bởi item con */
       animation: popoverAnimation 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       transform-origin: top right;
       .menu-item {
@@ -103,9 +103,9 @@
         color: #228be6; /* (Tùy chọn) Chuyển chữ sang màu xanh của Header cho đẹp */
       }
       .menu-item.logout {
-      color: #e62222; /* (Tùy chọn) Chuyển chữ sang màu xanh của Header cho đẹp */
+        color: #e62222; /* (Tùy chọn) Chuyển chữ sang màu xanh của Header cho đẹp */
+      }
     }
-          }
   }
 }
 
@@ -149,4 +149,43 @@
   }
 }
 
+//mobile
+@media (min-width: 280px) and (max-width: 575.98px) {
+  .header-container {
+    height: 50px;
+    .header-left {
+      .icon-fabars {
+        width: 24px;
+        height: 24px;
+        padding: 2px 4px;
+        margin-left: 10px;
+        margin-top: 6px;
+      }
+    }
+    .header-right {
+      .information-user {
+        margin-left: 10px;
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+        }
+        .user-name {
+          margin-right: 10px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
 
+//tablet
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .header-container{
+    height: 90px;
+    .header-left {
+      .icon-fabars {
+        margin-top: 6px;
+      }
+    }
+  }
+}

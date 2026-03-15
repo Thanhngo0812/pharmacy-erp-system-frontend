@@ -69,7 +69,7 @@ $font-family: "Be Vietnam Pro", sans-serif;
 
         select,
         input[type="number"] {
-            padding: 8px 12px;
+            padding: 4px 4px;
             border: 1px solid $gray-200;
             border-radius: $border-radius;
             font-size: 14px;
@@ -87,11 +87,11 @@ $font-family: "Be Vietnam Pro", sans-serif;
         }
 
         .month-select {
-            width: 130px;
+            width: 100px;
         }
 
         .year-input {
-            width: 90px;
+            width: 86px;
         }
 
         .btn-calculate {

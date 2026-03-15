@@ -1,7 +1,8 @@
 .admin-container {
   display: flex;
-  height: 100vh;
   background-color: #f9fafb;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .header-content-container {
@@ -12,7 +13,6 @@
 }
 
 .content-container {
-  // padding: 20px;
   flex: 1;
   overflow-y: auto;
   position: relative;
