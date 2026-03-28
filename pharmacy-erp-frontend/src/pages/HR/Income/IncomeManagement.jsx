@@ -4,6 +4,7 @@ import SalaryList from "../Salary/SalaryList";
 import BonusList from "../Bonuses/BonusList";
 import MonthlyPayroll from "../Payroll/MonthlyPayroll";
 import PayrollSummary from "../Payroll/PayrollSummary";
+import PayrollConfigManagement from "../Payroll/PayrollConfigManagement";
 import "./IncomeManagement.scss";
 
 const IncomeManagement = () => {
@@ -36,6 +37,12 @@ const IncomeManagement = () => {
                 >
                     <i className="bi bi-calendar3" style={{ marginRight: '6px' }}></i> Bảng lương tháng
                 </button>
+                <button
+                    className={`tab-item ${activeTab === "payroll-config" ? "active" : ""}`}
+                    onClick={() => setActiveTab("payroll-config")}
+                >
+                    <i className="bi bi-sliders" style={{ marginRight: '6px' }}></i> Payroll Config
+                </button>
                 {isAdmin && (
                     <button
                         className={`tab-item ${activeTab === "summary" ? "active" : ""}`}
@@ -50,6 +57,7 @@ const IncomeManagement = () => {
                 {activeTab === "salary" && <SalaryList embedded />}
                 {activeTab === "bonus" && <BonusList embedded />}
                 {activeTab === "payroll" && <MonthlyPayroll embedded />}
+                {activeTab === "payroll-config" && <PayrollConfigManagement embedded />}
                 {activeTab === "summary" && isAdmin && <PayrollSummary embedded />}
             </div>
         </div>

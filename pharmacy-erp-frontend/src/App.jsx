@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import Dashboard from "./components/PagesAdmin/Dashboard";
 import Product from "./components/PagesAdmin/Product";
+import UnitManagement from "./components/PagesAdmin/UnitManagement";
 import User from "./components/PagesAdmin/User";
 import Account from "./components/PagesAdmin/Account";
 import Profile from "./components/PagesAdmin/Profile";
@@ -24,6 +25,7 @@ import SalaryList from "./pages/HR/Salary/SalaryList";
 import BonusList from "./pages/HR/Bonuses/BonusList";
 import IncomeManagement from "./pages/HR/Income/IncomeManagement";
 import MySalary from "./pages/User/MySalary/MySalary";
+import PayrollConfigManagement from "./pages/HR/Payroll/PayrollConfigManagement";
 import PageNotFound from "./pages/PageNotFound";
 
 function App() {
@@ -61,8 +63,16 @@ function App() {
             <Route
               path="product"
               element={
-                <ProtectedRoute roles={["ROLE_ADMIN"]}>
+                <ProtectedRoute roles={["ROLE_ADMIN", "ROLE_WM"]}>
                   <Product />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="product/units"
+              element={
+                <ProtectedRoute roles={["ROLE_ADMIN", "ROLE_WM"]}>
+                  <UnitManagement />
                 </ProtectedRoute>
               }
             />
@@ -104,6 +114,9 @@ function App() {
             />
             <Route path="employees/income" element={<ProtectedRoute roles={["ROLE_ADMIN", "ROLE_HM"]}>
               <IncomeManagement />
+            </ProtectedRoute>} />
+            <Route path="employees/payroll-config" element={<ProtectedRoute roles={["ROLE_ADMIN", "ROLE_HM", "ROLE_MANAGER"]}>
+              <PayrollConfigManagement />
             </ProtectedRoute>} />
             <Route path="employees/salary-fund" element={<ProtectedRoute roles={["ROLE_ADMIN", "ROLE_HM"]}>
               <SalaryList />

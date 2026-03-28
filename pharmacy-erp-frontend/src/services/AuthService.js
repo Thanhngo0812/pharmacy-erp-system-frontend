@@ -1008,4 +1008,185 @@ export const AuthService = {
       throw error;
     }
   },
+
+  // --- PAYROLL CONFIG APIs ---
+  getPayrollConfigs: async () => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy danh sách payroll config:", error);
+      throw error;
+    }
+  },
+
+  getPayrollConfigById: async (id) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config/${id}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy chi tiết payroll config:", error);
+      throw error;
+    }
+  },
+
+  updatePayrollConfig: async (id, data, month, year) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.put(
+        `${API_URL}api/v1/hr/payroll-config/${id}`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: { month, year }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi cập nhật payroll config:", error);
+      throw error;
+    }
+  },
+
+  getPayrollConfigLock: async (month, year) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config/locks`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: { month, year }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy trạng thái khóa payroll config:", error);
+      throw error;
+    }
+  },
+
+  upsertPayrollConfigLock: async (data) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.put(
+        `${API_URL}api/v1/hr/payroll-config/locks`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi cập nhật khóa payroll config:", error);
+      throw error;
+    }
+  },
+
+  // --- PAYROLL CONFIG VERSION APIs (enterprise effective-dated) ---
+  getPayrollConfigVersions: async (params = {}) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config/versions`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy danh sách payroll config version:", error);
+      throw error;
+    }
+  },
+
+  getPayrollConfigVersionEffective: async (params = {}) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config/versions/effective`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy version effective payroll config:", error);
+      throw error;
+    }
+  },
+
+  getPayrollConfigVersionById: async (id) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll-config/versions/${id}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy chi tiết payroll config version:", error);
+      throw error;
+    }
+  },
+
+  // --- PAYROLL SNAPSHOT APIs (enterprise freeze/audit) ---
+  getPayrollMonthlySnapshot: async (params = {}) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) throw new Error("Chưa đăng nhập");
+      const { accessToken } = JSON.parse(userStr);
+
+      const response = await axios.get(
+        `${API_URL}api/v1/hr/payroll/snapshots`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi lấy payroll snapshot theo kỳ:", error);
+      throw error;
+    }
+  },
 };

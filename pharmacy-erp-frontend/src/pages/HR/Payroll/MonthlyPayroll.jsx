@@ -26,6 +26,7 @@ const MonthlyPayroll = ({ embedded = false }) => {
     const [payrollData, setPayrollData] = useState(null);
     const [employees, setEmployees] = useState([]);
     const [summary, setSummary] = useState(null);
+    const [snapshotInfo, setSnapshotInfo] = useState(null);
     const [error, setError] = useState(null);
     const [detailModal, setDetailModal] = useState({ isOpen: false, data: null, loading: false });
 
@@ -40,6 +41,37 @@ const MonthlyPayroll = ({ embedded = false }) => {
     const formatMoney = (amount) => {
         if (amount == null) return "0";
         return Number(amount).toLocaleString("vi-VN");
+    };
+
+    const getSnapshotMeta = (payload) => {
+        if (!payload) return null;
+
+        const summaryMeta = payload.summary || {};
+        const rawSnapshot = payload.payrollSnapshot || payload.snapshot || {};
+
+        const versionNo =
+            rawSnapshot.versionNo ?? rawSnapshot.snapshotVersion ??
+            summaryMeta.versionNo ?? summaryMeta.snapshotVersion ??
+            payload.snapshotVersion ?? null;
+
+        const generatedAt =
+            rawSnapshot.generatedAt ?? rawSnapshot.createdAt ?? rawSnapshot.snapshotAt ??
+            summaryMeta.snapshotAt ?? payload.snapshotAt ?? null;
+
+        const locked =
+            rawSnapshot.isLocked ?? rawSnapshot.isFinalized ??
+            summaryMeta.isLocked ?? summaryMeta.isFinalized ??
+            payload.isLocked ?? null;
+
+        const source =
+            rawSnapshot.source ?? rawSnapshot.calculationMode ??
+            payload.calculationSource ?? payload.calculationMode ?? null;
+
+        if (versionNo == null && generatedAt == null && locked == null && source == null) {
+            return null;
+        }
+
+        return { versionNo, generatedAt, locked, source };
     };
 
     const fetchPayroll = useCallback(async () => {
@@ -76,9 +108,26 @@ const MonthlyPayroll = ({ embedded = false }) => {
             setPayrollData(payroll);
             setEmployees(payroll.employees || []);
             setSummary(payroll.summary || null);
+
+            const foundSnapshotMeta = getSnapshotMeta(payroll);
+            if (foundSnapshotMeta) {
+                setSnapshotInfo(foundSnapshotMeta);
+            } else {
+                try {
+                    const snapshotRes = await AuthService.getPayrollMonthlySnapshot({
+                        month: selectedMonth,
+                        year: selectedYear,
+                    });
+                    const snapshotPayload = snapshotRes?.data || snapshotRes;
+                    setSnapshotInfo(getSnapshotMeta(snapshotPayload));
+                } catch (_) {
+                    setSnapshotInfo(null);
+                }
+            }
         } catch (err) {
             const msg = err.response?.data?.message || "Lỗi khi tải bảng lương";
             setError(msg);
+            setSnapshotInfo(null);
             toast.error(msg);
         } finally {
             setLoading(false);
@@ -99,6 +148,30 @@ const MonthlyPayroll = ({ embedded = false }) => {
         if (payrollData) {
             fetchPayroll();
         }
+
+            {snapshotInfo && (
+                <div className="snapshot-banner">
+                    <div className="snapshot-title">
+                        <i className="bi bi-shield-check"></i> Metadata kỳ lương
+                    </div>
+                    <div className="snapshot-items">
+                        {snapshotInfo.versionNo != null && (
+                            <span className="snapshot-chip">Version: {snapshotInfo.versionNo}</span>
+                        )}
+                        {snapshotInfo.generatedAt && (
+                            <span className="snapshot-chip">Snapshot lúc: {new Date(snapshotInfo.generatedAt).toLocaleString("vi-VN")}</span>
+                        )}
+                        {snapshotInfo.source && (
+                            <span className="snapshot-chip">Nguồn tính: {snapshotInfo.source}</span>
+                        )}
+                        {snapshotInfo.locked != null && (
+                            <span className={`snapshot-chip ${snapshotInfo.locked ? "locked" : "open"}`}>
+                                {snapshotInfo.locked ? "Đã khóa kỳ" : "Kỳ đang mở"}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            )}
     }, [filters]);
 
     const openDetail = async (emp) => {
@@ -209,8 +282,15 @@ const MonthlyPayroll = ({ embedded = false }) => {
 
             {/* Summary Cards */}
             {summary && (() => {
-                const calTotalBonus = summary.totalAllowance || 0;
-                const calTotalDeduction = (summary.totalDeduction || 0) + Math.abs(summary.totalPenalty || 0);
+                const calTotalBonus = summary.totalBonus != null
+                    ? summary.totalBonus
+                    : (summary.totalAllowance || 0) + (summary.totalPenalty || 0);
+                const calTotalDeduction = summary.totalDeduction || 0;
+                const calTotalInsurance = summary.totalInsurance || 0;
+                const calTotalPit = summary.totalPit || 0;
+                const calTotalNetPayroll = summary.totalNetPayroll != null
+                    ? summary.totalNetPayroll
+                    : (summary.totalPayroll || 0) - calTotalInsurance - calTotalPit;
 
                 return (
                     <div className="summary-cards">
@@ -219,16 +299,30 @@ const MonthlyPayroll = ({ embedded = false }) => {
                             <span className="summary-value">{summary.totalEmployees}</span>
                         </div>
                         <div className="summary-card total-payroll">
-                            <span className="summary-label">Tổng quỹ lương</span>
+                            <span className="summary-label">Tổng Gross nội bộ</span>
                             <span className="summary-value">{formatMoney(summary.totalPayroll)} ₫</span>
                         </div>
                         <div className="summary-card total-bonus">
-                            <span className="summary-label">Tổng thưởng</span>
-                            <span className="summary-value">+{formatMoney(calTotalBonus)} ₫</span>
+                            <span className="summary-label">Tổng trợ cấp/thưởng/phạt</span>
+                            <span className="summary-value">
+                                {calTotalBonus >= 0 ? "+" : ""}{formatMoney(calTotalBonus)} ₫
+                            </span>
                         </div>
                         <div className="summary-card total-deduction">
-                            <span className="summary-label">Tổng khấu trừ</span>
+                            <span className="summary-label">Tổng khấu trừ nghỉ phép</span>
                             <span className="summary-value">-{formatMoney(calTotalDeduction)} ₫</span>
+                        </div>
+                        <div className="summary-card total-deduction">
+                            <span className="summary-label">Tổng bảo hiểm</span>
+                            <span className="summary-value">-{formatMoney(calTotalInsurance)} ₫</span>
+                        </div>
+                        <div className="summary-card total-deduction">
+                            <span className="summary-label">Tổng PIT</span>
+                            <span className="summary-value">-{formatMoney(calTotalPit)} ₫</span>
+                        </div>
+                        <div className="summary-card total-payroll">
+                            <span className="summary-label">Tổng lương thực nhận</span>
+                            <span className="summary-value">{formatMoney(calTotalNetPayroll)} ₫</span>
                         </div>
                     </div>
                 );
@@ -259,7 +353,7 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                 <option value="id">Sắp xếp: ID</option>
                                 <option value="name">Sắp xếp: Tên</option>
                                 <option value="baseSalary">Sắp xếp: Lương CB</option>
-                                <option value="totalSalary">Sắp xếp: Thực nhận</option>
+                                <option value="totalSalary">Sắp xếp: Gross nội bộ</option>
                             </select>
                             <select name="order" value={filters.order} onChange={handleFilterChange} className="order-select">
                                 <option value="asc">Tăng ⬆</option>
@@ -293,17 +387,27 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                     <th>Chức vụ</th>
                                     <th style={{ textAlign: 'right' }}>Lương cơ bản</th>
                                     <th style={{ textAlign: 'center' }}>Nghỉ KL</th>
-                                    <th style={{ textAlign: 'right' }}>Khấu trừ</th>
+                                    <th style={{ textAlign: 'right' }}>Khấu trừ nghỉ</th>
                                     <th style={{ textAlign: 'right' }}>Thưởng</th>
+                                    <th style={{ textAlign: 'right' }}>Gross nội bộ</th>
+                                    <th style={{ textAlign: 'right' }}>BH bắt buộc</th>
+                                    <th style={{ textAlign: 'right' }}>PIT</th>
                                     <th style={{ textAlign: 'right' }}>Thực nhận</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {employees.length > 0 ? (
                                     employees.map(emp => {
-                                        const penaltyAmount = Math.abs(emp.totalPenalty || 0);
-                                        const bonusAmount = emp.totalAllowance || 0;
-                                        const totalDeduction = (emp.leaveDeduction || 0) + penaltyAmount;
+                                        const monthlyBonus = emp.totalBonus != null
+                                            ? emp.totalBonus
+                                            : (emp.totalAllowance || 0) + (emp.totalPenalty || 0);
+                                        const leaveDeduction = emp.leaveDeduction || 0;
+                                        const insuranceDeduction = emp.insuranceDeduction || 0;
+                                        const pitTax = emp.pitTax || 0;
+                                        const grossInternal = emp.totalSalary || 0;
+                                        const netSalary = emp.netSalary != null
+                                            ? emp.netSalary
+                                            : (grossInternal - insuranceDeduction - pitTax);
                                         return (
                                             <tr key={emp.employeeId} onClick={() => openDetail(emp)} title="Nhấn để xem chi tiết">
                                                 <td className="id-col">#{emp.employeeId}</td>
@@ -313,15 +417,18 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                                 <td style={{ textAlign: 'center' }}>
                                                     <span className="leave-days">{emp.unpaidLeaveDays || 0}</span>
                                                 </td>
-                                                <td className="money-col deduction-col">-{formatMoney(totalDeduction)}</td>
-                                                <td className="money-col bonus-col">{bonusAmount > 0 ? `+${formatMoney(bonusAmount)}` : '0'}</td>
-                                                <td className="total-col">{formatMoney(emp.totalSalary)} ₫</td>
+                                                <td className="money-col deduction-col">-{formatMoney(leaveDeduction)}</td>
+                                                <td className="money-col bonus-col">{monthlyBonus >= 0 ? `+${formatMoney(monthlyBonus)}` : formatMoney(monthlyBonus)}</td>
+                                                <td className="money-col">{formatMoney(grossInternal)} ₫</td>
+                                                <td className="money-col deduction-col">-{formatMoney(insuranceDeduction)} ₫</td>
+                                                <td className="money-col deduction-col">-{formatMoney(pitTax)} ₫</td>
+                                                <td className="total-col">{formatMoney(netSalary)} ₫</td>
                                             </tr>
                                         );
                                     })
                                 ) : (
                                     <tr>
-                                        <td colSpan="8" className="no-data">Không có dữ liệu nhân viên</td>
+                                        <td colSpan="11" className="no-data">Không có dữ liệu nhân viên</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -405,23 +512,21 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                         </div>
                                     )}
 
-                                    {/* Thưởng & Trợ cấp (chỉ hiện khoản dương) */}
+                                    {/* Khoản theo tháng (trợ cấp/thưởng/phạt) */}
                                     {(() => {
                                         const allBonuses = detailModal.data.bonuses || [];
-                                        const positiveBonuses = allBonuses.filter(b => b.amount >= 0);
-                                        const negativeBonuses = allBonuses.filter(b => b.amount < 0);
-
-                                        // Sử dụng các trường từ API nếu có, fallback về danh sách chi tiết
-                                        const totalPositive = detailModal.data.totalAllowance != null ? detailModal.data.totalAllowance : positiveBonuses.reduce((s, b) => s + b.amount, 0);
-                                        const totalNegative = detailModal.data.totalPenalty != null ? Math.abs(detailModal.data.totalPenalty) : negativeBonuses.reduce((s, b) => s + Math.abs(b.amount), 0);
-                                        const totalDeduction = (detailModal.data.leaveDeduction || 0) + totalNegative;
+                                        const totalMonthlyBonus = detailModal.data.totalBonus != null
+                                            ? detailModal.data.totalBonus
+                                            : ((detailModal.data.totalAllowance || 0) + (detailModal.data.totalPenalty || 0));
+                                        const totalDeduction = detailModal.data.totalDeduction != null
+                                            ? detailModal.data.totalDeduction
+                                            : (detailModal.data.leaveDeduction || 0);
 
                                         return (
                                             <>
-                                                {/* Thưởng */}
                                                 <div className="detail-section">
-                                                    <div className="section-title"><i className="bi bi-gift"></i> Thưởng & Trợ cấp</div>
-                                                    {positiveBonuses.length > 0 ? (
+                                                    <div className="section-title"><i className="bi bi-gift"></i> Khoản theo tháng (trợ cấp/thưởng/phạt)</div>
+                                                    {allBonuses.length > 0 ? (
                                                         <table className="detail-table">
                                                             <thead>
                                                                 <tr>
@@ -430,30 +535,33 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                {positiveBonuses.map((bonus, idx) => (
+                                                                {allBonuses.map((bonus, idx) => (
                                                                     <tr key={idx}>
                                                                         <td>{bonus.bonusName}</td>
-                                                                        <td className="money bonus">+{formatMoney(bonus.amount)} ₫</td>
+                                                                        <td className={`money ${bonus.amount >= 0 ? 'bonus' : 'danger'}`}>
+                                                                            {bonus.amount >= 0 ? '+' : ''}{formatMoney(bonus.amount)} ₫
+                                                                        </td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
                                                         </table>
                                                     ) : (
-                                                        <p className="no-data-text">Không có khoản thưởng/trợ cấp</p>
+                                                        <p className="no-data-text">Không có khoản trợ cấp/thưởng/phạt theo tháng</p>
                                                     )}
                                                     <div className="info-grid" style={{ marginTop: '10px' }}>
                                                         <div className="info-item">
-                                                            <span className="label">Tổng thưởng</span>
-                                                            <span className="value money bonus">+{formatMoney(totalPositive)} ₫</span>
+                                                            <span className="label">Tổng khoản theo tháng</span>
+                                                            <span className={`value money ${totalMonthlyBonus >= 0 ? 'bonus' : 'danger'}`}>
+                                                                {totalMonthlyBonus >= 0 ? '+' : ''}{formatMoney(totalMonthlyBonus)} ₫
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                {/* Khấu trừ (nghỉ phép + phạt) */}
+                                                {/* Khấu trừ */}
                                                 <div className="detail-section">
                                                     <div className="section-title"><i className="bi bi-dash-circle"></i> Khấu trừ</div>
 
-                                                    {/* Nghỉ phép */}
                                                     {detailModal.data.leaveDetails && detailModal.data.leaveDetails.length > 0 && (
                                                         <>
                                                             <p style={{ fontSize: '13px', fontWeight: 600, color: '#868e96', marginBottom: '6px' }}>Nghỉ phép không lương</p>
@@ -480,41 +588,48 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                                         </>
                                                     )}
 
-                                                    {/* Phạt / Khoản âm */}
-                                                    {negativeBonuses.length > 0 && (
-                                                        <>
-                                                            <p style={{ fontSize: '13px', fontWeight: 600, color: '#868e96', margin: '12px 0 6px' }}>Phạt & Khấu trừ khác</p>
-                                                            <table className="detail-table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Tên khoản</th>
-                                                                        <th style={{ textAlign: 'right' }}>Số tiền</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {negativeBonuses.map((bonus, idx) => (
-                                                                        <tr key={idx}>
-                                                                            <td>{bonus.bonusName}</td>
-                                                                            <td className="money danger">-{formatMoney(Math.abs(bonus.amount))} ₫</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
-                                                        </>
-                                                    )}
-
-                                                    {!detailModal.data.leaveDetails?.length && negativeBonuses.length === 0 && (
+                                                    {!detailModal.data.leaveDetails?.length && !totalDeduction && (
                                                         <p className="no-data-text">Không có khoản khấu trừ</p>
                                                     )}
 
                                                     <div className="info-grid" style={{ marginTop: '10px' }}>
                                                         <div className="info-item">
                                                             <span className="label">Nghỉ KL: {detailModal.data.unpaidLeaveDays || 0} ngày</span>
-                                                            <span className="value money danger">-{formatMoney(detailModal.data.leaveDeduction)} ₫</span>
+                                                            <span className="value money danger">-{formatMoney(detailModal.data.leaveDeduction || 0)} ₫</span>
                                                         </div>
                                                         <div className="info-item">
                                                             <span className="label">Tổng khấu trừ</span>
                                                             <span className="value money danger">-{formatMoney(totalDeduction)} ₫</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="detail-section">
+                                                    <div className="section-title"><i className="bi bi-calculator"></i> Bảo hiểm và thuế</div>
+                                                    <div className="info-grid">
+                                                        <div className="info-item">
+                                                            <span className="label">Gross nội bộ</span>
+                                                            <span className="value money">{formatMoney(detailModal.data.totalSalary || 0)} ₫</span>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <span className="label">Bảo hiểm bắt buộc</span>
+                                                            <span className="value money danger">-{formatMoney(detailModal.data.insuranceDeduction || 0)} ₫</span>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <span className="label">Thuế TNCN (PIT)</span>
+                                                            <span className="value money danger">-{formatMoney(detailModal.data.pitTax || 0)} ₫</span>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <span className="label">Lương thực nhận</span>
+                                                            <span className="value money bonus">
+                                                                {formatMoney(
+                                                                    detailModal.data.netSalary != null
+                                                                        ? detailModal.data.netSalary
+                                                                        : ((detailModal.data.totalSalary || 0)
+                                                                            - (detailModal.data.insuranceDeduction || 0)
+                                                                            - (detailModal.data.pitTax || 0))
+                                                                )} ₫
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -525,7 +640,15 @@ const MonthlyPayroll = ({ embedded = false }) => {
                                     {/* Tổng kết */}
                                     <div className="total-bar">
                                         <span className="total-label"><i className="bi bi-wallet2"></i> LƯƠNG THỰC NHẬN</span>
-                                        <span className="total-value">{formatMoney(detailModal.data.totalSalary)} ₫</span>
+                                        <span className="total-value">
+                                            {formatMoney(
+                                                detailModal.data.netSalary != null
+                                                    ? detailModal.data.netSalary
+                                                    : ((detailModal.data.totalSalary || 0)
+                                                        - (detailModal.data.insuranceDeduction || 0)
+                                                        - (detailModal.data.pitTax || 0))
+                                            )} ₫
+                                        </span>
                                     </div>
                                 </>
                             )}

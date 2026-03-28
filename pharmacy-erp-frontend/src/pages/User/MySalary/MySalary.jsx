@@ -23,6 +23,21 @@ const MySalary = () => {
         return new Intl.NumberFormat("vi-VN").format(Math.round(value)) + " đ";
     };
 
+    const getMonthlyBonusTotal = (data) => {
+        if (!data) return 0;
+        if (data.totalBonus != null) return data.totalBonus;
+        if (Array.isArray(data.bonuses)) {
+            return data.bonuses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+        }
+        return 0;
+    };
+
+    const getNetSalary = (data) => {
+        if (!data) return 0;
+        if (data.netSalary != null) return data.netSalary;
+        return (data.totalSalary || 0) - (data.insuranceDeduction || 0) - (data.pitTax || 0);
+    };
+
     const handleSearch = async () => {
         setLoading(true);
         setError(null);
@@ -131,7 +146,7 @@ const MySalary = () => {
                         </div>
 
                         <div className="salary-section">
-                            <div className="section-title">Trợ cấp / Phụ cấp</div>
+                            <div className="section-title">Khoản theo tháng (trợ cấp/thưởng/phạt)</div>
                             {salaryData.bonuses && salaryData.bonuses.length > 0 ? (
                                 <div className="bonus-list">
                                     {salaryData.bonuses.map((b, idx) => (
@@ -145,13 +160,35 @@ const MySalary = () => {
                                 </div>
                             ) : (
                                 <div className="bonus-list">
-                                    <div className="no-bonus">Không có khoản trợ cấp nào trong tháng này.</div>
+                                    <div className="no-bonus">Không có khoản trợ cấp/thưởng/phạt trong tháng này.</div>
                                 </div>
                             )}
                             <div className="salary-row" style={{ marginTop: '8px' }}>
-                                <span className="label">Tổng trợ cấp</span>
-                                <span className={`value ${(salaryData.totalBonus ?? 0) >= 0 ? 'positive' : 'negative'}`}>
-                                    {(salaryData.totalBonus ?? 0) >= 0 ? "+" : ""}{formatCurrency(salaryData.totalBonus)}
+                                <span className="label">Tổng khoản theo tháng</span>
+                                <span className={`value ${getMonthlyBonusTotal(salaryData) >= 0 ? 'positive' : 'negative'}`}>
+                                    {getMonthlyBonusTotal(salaryData) >= 0 ? "+" : ""}{formatCurrency(getMonthlyBonusTotal(salaryData))}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="divider"></div>
+
+                        <div className="salary-section">
+                            <div className="section-title">Bảo hiểm và thuế</div>
+                            <div className="salary-row">
+                                <span className="label">Gross nội bộ</span>
+                                <span className="value">{formatCurrency(salaryData.totalSalary)}</span>
+                            </div>
+                            <div className="salary-row">
+                                <span className="label">Bảo hiểm bắt buộc</span>
+                                <span className="value negative">
+                                    -{formatCurrency(salaryData.insuranceDeduction || 0)}
+                                </span>
+                            </div>
+                            <div className="salary-row">
+                                <span className="label">Thuế TNCN (PIT)</span>
+                                <span className="value negative">
+                                    -{formatCurrency(salaryData.pitTax || 0)}
                                 </span>
                             </div>
                         </div>
@@ -161,7 +198,7 @@ const MySalary = () => {
                         <div className="total-section">
                             <div className="total-row">
                                 <span className="total-label">LƯƠNG THỰC NHẬN</span>
-                                <span className="total-value">{formatCurrency(salaryData.totalSalary)}</span>
+                                <span className="total-value">{formatCurrency(getNetSalary(salaryData))}</span>
                             </div>
                         </div>
                     </div>

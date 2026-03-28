@@ -12,6 +12,7 @@ import {
   FaGift,
   FaTimes,
 } from "react-icons/fa";
+import { FaBoxOpen, FaChartLine, FaUsers, FaChevronRight, FaAddressCard, FaBriefcase, FaCalendarCheck, FaMoneyBillWave, FaRulerCombined } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import logo from "/logo.png";
 import { useContext, useState } from "react";
@@ -40,16 +41,30 @@ export default function AdminSidebar({
       require_role: ["ROLE_ADMIN"],
     },
     {
-      path: "product",
+      path: "product-group",
       name: "Products",
       icon: <FaBoxOpen />,
-      require_role: ["ROLE_ADMIN"],
+      require_role: ["ROLE_ADMIN", "ROLE_WM"],
+      children: [
+        {
+          path: "product",
+          name: "Danh sách sản phẩm",
+          icon: <FaBoxOpen />,
+          require_role: ["ROLE_ADMIN", "ROLE_WM"],
+        },
+        {
+          path: "product/units",
+          name: "Đơn vị",
+          icon: <FaRulerCombined />,
+          require_role: ["ROLE_ADMIN", "ROLE_WM"],
+        },
+      ],
     },
     {
       path: "employees-group",
       name: "Nhân sự",
       icon: <FaUsers />,
-      require_role: ["ROLE_ADMIN", "ROLE_HM"],
+      require_role: ["ROLE_ADMIN", "ROLE_HM", "ROLE_MANAGER"],
       children: [
         {
           path: "employees",

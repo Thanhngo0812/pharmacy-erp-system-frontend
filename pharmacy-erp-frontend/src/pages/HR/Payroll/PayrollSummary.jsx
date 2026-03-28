@@ -162,15 +162,25 @@ const PayrollSummary = ({ embedded = false }) => {
                                 <tr>
                                     <th>Kỳ lương</th>
                                     <th style={{ textAlign: 'center' }}>Tổng nhân viên</th>
-                                    <th>Tổng quỹ lương</th>
+                                    <th>Tổng Gross nội bộ</th>
                                     <th>Tổng thưởng</th>
-                                    <th>Tổng khấu trừ</th>
+                                    <th>Tổng khấu trừ nghỉ</th>
+                                    <th>Tổng bảo hiểm</th>
+                                    <th>Tổng PIT</th>
+                                    <th>Tổng thực nhận</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {summaryData.map((data, index) => {
-                                    const grossBonus = data.totalAllowance || 0;
-                                    const grossDeduction = (data.totalDeduction || 0) + Math.abs(data.totalPenalty || 0);
+                                    const grossBonus = data.totalBonus != null
+                                        ? data.totalBonus
+                                        : (data.totalAllowance || 0) + (data.totalPenalty || 0);
+                                    const grossDeduction = data.totalDeduction || 0;
+                                    const totalInsurance = data.totalInsurance || 0;
+                                    const totalPit = data.totalPit || 0;
+                                    const totalNetPayroll = data.totalNetPayroll != null
+                                        ? data.totalNetPayroll
+                                        : ((data.totalPayroll || 0) - totalInsurance - totalPit);
 
                                     return (
                                         <tr key={index}>
@@ -186,10 +196,19 @@ const PayrollSummary = ({ embedded = false }) => {
                                                 {formatMoney(data.totalPayroll)} ₫
                                             </td>
                                             <td className="money-col bonus-col">
-                                                +{formatMoney(grossBonus)}
+                                                {grossBonus >= 0 ? '+' : ''}{formatMoney(grossBonus)}
                                             </td>
                                             <td className="money-col deduction-col">
                                                 -{formatMoney(grossDeduction)}
+                                            </td>
+                                            <td className="money-col deduction-col">
+                                                -{formatMoney(totalInsurance)}
+                                            </td>
+                                            <td className="money-col deduction-col">
+                                                -{formatMoney(totalPit)}
+                                            </td>
+                                            <td className="total-col" style={{ color: '#2b8a3e' }}>
+                                                {formatMoney(totalNetPayroll)} ₫
                                             </td>
                                         </tr>
                                     );

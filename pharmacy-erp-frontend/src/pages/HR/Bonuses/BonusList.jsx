@@ -43,9 +43,8 @@ const BonusList = ({ embedded = false }) => {
         employeeIds: [],
         bonusName: "",
         amount: "",
-        monthPicker: "",
-        startDate: "",
-        endDate: "",
+        startMonth: "",
+        endMonth: "",
         reason: "",
         type: "Bonus" // "Bonus" hoặc "Deduction"
     });
@@ -53,11 +52,13 @@ const BonusList = ({ embedded = false }) => {
 
     useEffect(() => {
         const fetchEligibleEmps = async () => {
-            if (createModal.isOpen && createModal.startDate) {
+            if (createModal.isOpen && createModal.startMonth) {
+                const startDate = `${createModal.startMonth}-01`;
+                const endDate = createModal.endMonth ? `${createModal.endMonth}-01` : undefined;
                 try {
                     const res = await AuthService.getEligibleEmployees({
-                        startDate: createModal.startDate,
-                        endDate: createModal.endDate || undefined
+                        startDate,
+                        endDate
                     });
                     if (res?.data) {
                         const eligibleList = res.data;
@@ -79,7 +80,7 @@ const BonusList = ({ embedded = false }) => {
             }
         };
         fetchEligibleEmps();
-    }, [createModal.isOpen, createModal.startDate, createModal.endDate]);
+    }, [createModal.isOpen, createModal.startMonth, createModal.endMonth]);
 
     // Filters
     const [filters, setFilters] = useState({
@@ -88,6 +89,7 @@ const BonusList = ({ embedded = false }) => {
         minAmount: "",
         maxAmount: "",
         startDate: "",
+        endDate: "",
         sortDirection: "desc"
     });
 
@@ -148,9 +150,18 @@ const BonusList = ({ embedded = false }) => {
         setLoading(true);
         setError(null);
         try {
-            const cleanParams = Object.fromEntries(
-                Object.entries(filters).filter(([_, v]) => v !== "")
-            );
+            const cleanParams = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ""));
+
+            // Frontend giữ UX theo tháng, backend vẫn nhận startDate/endDate.
+            if (filters.startDate) {
+                cleanParams.startDate = `${filters.startDate}-01`;
+            }
+            if (filters.endDate) {
+                const [year, month] = filters.endDate.split("-").map(Number);
+                const lastDay = new Date(year, month, 0).getDate();
+                cleanParams.endDate = `${filters.endDate}-${String(lastDay).padStart(2, "0")}`;
+            }
+
             // API mới dùng minAmount/maxAmount thay vì amount
             const response = await AuthService.getBonuses(cleanParams);
             if (response && response.data) {
@@ -217,6 +228,18 @@ const BonusList = ({ embedded = false }) => {
         amount != null ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount) : "---";
     const formatDate = (dateString) =>
         dateString ? new Date(dateString).toLocaleDateString("vi-VN") : "---";
+    const formatMonthYear = (dateString) => {
+        if (!dateString) return "---";
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return "---";
+        return `${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+    };
+    const toMonthValue = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return "";
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    };
 
     const getStatusLabel = (status) => {
         const map = {
@@ -327,19 +350,23 @@ const BonusList = ({ embedded = false }) => {
             bonusIds: ids,
             bonusName: data.bonusName || "",
             startDate: data.startDate || "",
-            endDate: data.endDate && data.endDate !== "---" ? data.endDate : ""
+            startMonth: toMonthValue(data.startDate),
+            endMonth: data.endDate && data.endDate !== "---" ? toMonthValue(data.endDate) : ""
         });
     };
 
     const handleUpdateBonus = async (e) => {
         e.preventDefault();
 
-        if (editModal.endDate && editModal.startDate && new Date(editModal.endDate) < new Date(editModal.startDate)) {
+        if (editModal.endMonth && editModal.startMonth && editModal.endMonth < editModal.startMonth) {
             return toast.warning("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!");
         }
 
         try {
-            const payload = { bonusName: editModal.bonusName, endDate: editModal.endDate || null };
+            const payload = {
+                bonusName: editModal.bonusName,
+                endDate: editModal.endMonth ? `${editModal.endMonth}-01` : null
+            };
             if (editModal.isBulk) await AuthService.bulkUpdateBonus({ bonusIds: editModal.bonusIds, ...payload });
             else await AuthService.updateBonus(editModal.bonusIds[0], payload);
 
@@ -352,41 +379,17 @@ const BonusList = ({ embedded = false }) => {
         }
     };
 
-    const handleMonthChange = (e) => {
-        const val = e.target.value; // YYYY-MM
-        if (val) {
-            const date = new Date(`${val}-01`);
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const lastDay = new Date(year, month + 1, 0);
-
-            // Format YYYY-MM-DD - Lấy ngày cuối của tháng làm start và end
-            const yyyyMm = val;
-            const yyyyMmDd = `${yyyyMm}-${lastDay.getDate().toString().padStart(2, '0')}`;
-
-            setCreateModal({
-                ...createModal,
-                monthPicker: val,
-                startDate: yyyyMmDd,
-                endDate: yyyyMmDd
-            });
-        } else {
-            setCreateModal({
-                ...createModal,
-                monthPicker: "",
-                startDate: "",
-                endDate: ""
-            });
-        }
-    };
-
     const handleCreateBonus = async (e) => {
         e.preventDefault();
         if (createModal.employeeIds.length === 0) {
             return toast.warning("Vui lòng chọn ít nhất 1 nhân viên!");
         }
 
-        if (createModal.endDate && new Date(createModal.startDate) > new Date(createModal.endDate)) {
+        if (!createModal.startMonth) {
+            return toast.warning("Vui lòng chọn tháng bắt đầu áp dụng!");
+        }
+
+        if (createModal.endMonth && createModal.endMonth < createModal.startMonth) {
             return toast.warning("Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng!");
         }
         try {
@@ -394,8 +397,8 @@ const BonusList = ({ embedded = false }) => {
                 employeeIds: createModal.employeeIds,
                 bonusName: createModal.bonusName,
                 amount: createModal.type === "Deduction" ? -Math.abs(parseFloat(createModal.amount)) : Math.abs(parseFloat(createModal.amount)),
-                startDate: createModal.startDate,
-                endDate: createModal.endDate || null,
+                startDate: `${createModal.startMonth}-01`,
+                endDate: createModal.endMonth ? `${createModal.endMonth}-01` : null,
                 reason: createModal.reason || null
             };
             await AuthService.createBonus(payload);
@@ -405,9 +408,8 @@ const BonusList = ({ embedded = false }) => {
                 employeeIds: [],
                 bonusName: "",
                 amount: "",
-                monthPicker: "",
-                startDate: "",
-                endDate: "",
+                startMonth: "",
+                endMonth: "",
                 reason: "",
                 type: "Bonus"
             });
@@ -549,9 +551,9 @@ const BonusList = ({ embedded = false }) => {
                                     <input type="text" className="form-control" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: '6px' }} value={editModal.bonusName} onChange={e => setEditModal({ ...editModal, bonusName: e.target.value })} required />
                                 </div>
                                 <div style={{ marginBottom: '15px' }}>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Ngày kết thúc</label>
-                                    <input type="date" className="form-control" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: '6px' }} value={editModal.endDate} onChange={e => setEditModal({ ...editModal, endDate: e.target.value })} />
-                                    <small style={{ color: '#868e96' }}>Bỏ trống nếu là vô thời hạn.</small>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Tháng kết thúc</label>
+                                    <input type="month" className="form-control" style={{ width: '100%', padding: '10px', border: '1px solid #dee2e6', borderRadius: '6px' }} value={editModal.endMonth || ""} min={editModal.startMonth || undefined} onChange={e => setEditModal({ ...editModal, endMonth: e.target.value })} />
+                                    <small style={{ color: '#868e96' }}>Bỏ trống nếu áp dụng vô thời hạn.</small>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
                                     <button type="button" className="btn-default" style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #dee2e6', background: '#fff', cursor: 'pointer' }} onClick={() => setEditModal({ ...editModal, isOpen: false })}>Bỏ qua</button>
@@ -628,29 +630,21 @@ const BonusList = ({ embedded = false }) => {
                                     <label>Số tiền (VNĐ) <span style={{ color: 'red' }}>*</span></label>
                                     <input
                                         type="text"
-                                        placeholder="Ví dụ: 500.000"
+                                        placeholder="Ví dụ: 500.000 / tháng"
                                         value={formatInputNumber(createModal.amount)}
                                         onChange={e => setCreateModal({ ...createModal, amount: stripNonDigits(e.target.value) })}
                                         required
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label style={{ color: '#1c7ed6' }}>Chọn Tháng/Năm nhanh</label>
-                                    <input type="month" value={createModal.monthPicker} onChange={handleMonthChange} />
-                                    <small style={{ color: '#868e96', marginTop: '4px' }}>Hệ thống sẽ dùng ngày cuối của tháng làm ngày kết thúc.</small>
+                                    <label>Mốc tháng bắt đầu <span style={{ color: 'red' }}>*</span></label>
+                                    <input type="month" value={createModal.startMonth} onChange={e => setCreateModal({ ...createModal, startMonth: e.target.value, endMonth: e.target.value && createModal.endMonth && createModal.endMonth < e.target.value ? e.target.value : createModal.endMonth })} required />
                                 </div>
-                                {!createModal.monthPicker && (
-                                    <div className="form-group row">
-                                        <div className="col">
-                                            <label>Ngày bắt đầu hiệu lực <span style={{ color: 'red' }}>*</span></label>
-                                            <input type="date" value={createModal.startDate} onChange={e => setCreateModal({ ...createModal, startDate: e.target.value })} required />
-                                        </div>
-                                        <div className="col">
-                                            <label>Ngày kết thúc</label>
-                                            <input type="date" value={createModal.endDate} min={createModal.startDate} onChange={e => setCreateModal({ ...createModal, endDate: e.target.value })} />
-                                        </div>
-                                    </div>
-                                )}
+                                <div className="form-group">
+                                    <label>Mốc tháng kết thúc</label>
+                                    <input type="month" value={createModal.endMonth} min={createModal.startMonth || undefined} onChange={e => setCreateModal({ ...createModal, endMonth: e.target.value })} />
+                                    <small style={{ color: '#868e96', marginTop: '4px' }}>Bỏ trống nếu muốn áp dụng vô thời hạn.</small>
+                                </div>
                                 <div className="form-group">
                                     <label>Ghi chú khởi tạo</label>
                                     <textarea rows="2" value={createModal.reason} onChange={e => setCreateModal({ ...createModal, reason: e.target.value })} placeholder="Nhập ghi chú..."></textarea>
@@ -659,16 +653,16 @@ const BonusList = ({ embedded = false }) => {
                                 <div className="form-group" style={{ marginBottom: 0 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                         <label style={{ margin: 0 }}>Chọn nhân viên nhận ({createModal.employeeIds.length} người) <span style={{ color: 'red' }}>*</span></label>
-                                        {createModal.startDate && (
+                                        {createModal.startMonth && (
                                             <button type="button" onClick={toggleSelectAll} style={{ padding: '4px 8px', fontSize: '12px', cursor: 'pointer', background: '#e7f5ff', color: '#1c7ed6', border: '1px solid #74c0fc', borderRadius: '4px', whiteSpace: 'nowrap' }}>
                                                 {employeeList.length > 0 && createModal.employeeIds.length === employeeList.length ? "Bỏ chọn tất cả" : "Chọn tất cả"}
                                             </button>
                                         )}
                                     </div>
-                                    {!createModal.startDate ? (
+                                    {!createModal.startMonth ? (
                                         <div style={{ padding: '20px', textAlign: 'center', color: '#868e96', background: '#f8f9fa', borderRadius: '4px', border: '1px dashed #ced4da', fontStyle: 'italic', fontSize: '14px' }}>
                                             <i className="bi bi-calendar-event" style={{ fontSize: '24px', display: 'block', marginBottom: '8px', color: '#adb5bd' }}></i>
-                                            Vui lòng chọn ngày áp dụng để hiển thị danh sách nhân sự thỏa điều kiện
+                                            Vui lòng chọn tháng bắt đầu để hiển thị danh sách nhân sự thỏa điều kiện
                                         </div>
                                     ) : (
                                         <div className="table-container" style={{ border: '1px solid #dee2e6', borderRadius: '4px', background: '#fff' }}>
@@ -687,7 +681,7 @@ const BonusList = ({ embedded = false }) => {
                             </div>
                             <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'flex-end', gap: '12px', backgroundColor: '#f8f9fa', borderTop: '1px solid #dee2e6', borderRadius: '0 0 8px 8px' }}>
                                 <button type="button" onClick={() => setCreateModal({ ...createModal, isOpen: false })} style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #dee2e6', background: 'transparent', cursor: 'pointer', fontWeight: 600, color: '#868e96' }}>Bỏ qua</button>
-                                <button type="submit" disabled={!createModal.employeeIds.length || !createModal.amount.trim() || !createModal.bonusName.trim()} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#65A7E3', color: 'white', cursor: 'pointer', fontWeight: 600, opacity: (!createModal.employeeIds.length || !createModal.amount.trim() || !createModal.bonusName.trim()) ? 0.5 : 1 }}>
+                                <button type="submit" disabled={!createModal.employeeIds.length || !createModal.amount.trim() || !createModal.bonusName.trim() || !createModal.startMonth} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#65A7E3', color: 'white', cursor: 'pointer', fontWeight: 600, opacity: (!createModal.employeeIds.length || !createModal.amount.trim() || !createModal.bonusName.trim() || !createModal.startMonth) ? 0.5 : 1 }}>
                                     + Tạo mới
                                 </button>
                             </div>
@@ -756,20 +750,21 @@ const BonusList = ({ embedded = false }) => {
                         </select>
                     </div>
                     <div className="filter-group">
-                        <label>Từ ngày</label>
+                        <label>Từ tháng</label>
                         <input
-                            type="date"
+                            type="month"
                             name="startDate"
                             value={filters.startDate}
                             onChange={handleInputChange}
                         />
                     </div>
                     <div className="filter-group">
-                        <label>Đến ngày</label>
+                        <label>Đến tháng</label>
                         <input
-                            type="date"
+                            type="month"
                             name="endDate"
                             value={filters.endDate}
+                            min={filters.startDate || undefined}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -799,8 +794,8 @@ const BonusList = ({ embedded = false }) => {
                                     <tr>
                                         <th>Khoản thưởng</th>
                                         <th>Số tiền / tháng</th>
-                                        <th>Từ ngày</th>
-                                        <th>Đến ngày</th>
+                                        <th>Từ tháng</th>
+                                        <th>Đến tháng</th>
                                         <th>Thông tin duyệt</th>
                                         <th>Trạng thái</th>
                                         <th>Số NV</th>
@@ -822,8 +817,8 @@ const BonusList = ({ embedded = false }) => {
                                                 <td className={`amount-text ${bonus.amount < 0 ? 'text-danger' : 'text-success'}`}>
                                                     {bonus.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(bonus.amount))}
                                                 </td>
-                                                <td>{formatDate(bonus.startDate)}</td>
-                                                <td>{formatDate(bonus.endDate) === "---" ? "Vô thời hạn" : formatDate(bonus.endDate)}</td>
+                                                <td>{formatMonthYear(bonus.startDate)}</td>
+                                                <td>{formatMonthYear(bonus.endDate) === "---" ? "Vô thời hạn" : formatMonthYear(bonus.endDate)}</td>
                                                 <td className="info-cell">
                                                     <div className="info-item">
                                                         <span className="label">Đề xuất:</span>
